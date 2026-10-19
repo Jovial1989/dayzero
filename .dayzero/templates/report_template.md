@@ -114,7 +114,7 @@ Flow not traceable or not found: Section 1 verdict = that n/a; Sections 2 and 3 
 
 ### Quadrant
 
-<!-- 1 point per feature with numeric coefficients: "F#: [x, y]" with x = |Worse| and y = Better, 2 decimals, 0 to 1. The square brackets in point lines are Mermaid syntax and stay in the report. Point names F1 to F5 only. Do not edit the axis, quadrant, or title lines. -->
+<!-- 1 point per feature with numeric coefficients: "F#: [x, y]" with x = |Worse| and y = Better, 0 to 1. Write 1 as "1" and every other value with 2 decimals ("0.00", "0.50"): Mermaid rejects "1.00". The square brackets in point lines are Mermaid syntax and stay in the report. Point names F1 to F5 only. Do not edit the axis, quadrant, or title lines. -->
 
 ```mermaid
 quadrantChart

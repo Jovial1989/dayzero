@@ -91,7 +91,7 @@ quadrantChart
     quadrant-2 Delighter
     quadrant-3 Indifferent
     quadrant-4 Must-have
-    F1: [1.00, 0.00]
+    F1: [1, 0.00]
     F2: [0.50, 0.50]
     F3: [0.00, 0.00]
     F4: [0.00, 0.50]

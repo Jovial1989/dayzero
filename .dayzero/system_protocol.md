@@ -261,7 +261,7 @@ Per feature:
    - If T = 0, write `n/a`.
 
 6. **Majority**: the single most frequent code for the feature across all personas, Q excluded. A tie means no majority (`none`).
-7. **Quadrant**: x = |Worse|, y = Better. Each axis is high at ≥0.5. High y + low x = Delighter, high y + high x = Performance, low y + low x = Indifferent, low y + high x = Must-have. A feature with `n/a` coefficients is off the chart. If the quadrant differs from the category, note `quadrant ≠ category`.
+7. **Quadrant**: x = |Worse|, y = Better. Each axis is high at ≥0.5. High y + low x = Delighter, high y + high x = Performance, low y + low x = Indifferent, low y + high x = Must-have. A feature with `n/a` coefficients is off the chart. In the Mermaid block, write a coordinate of exactly 1 as `1`, never `1.00` (Mermaid rejects it); other values keep 2 decimals. If the quadrant differs from the category, note `quadrant ≠ category`.
 
 **Strongest feature** = highest Better; ties go to the higher count of M + P.
 
