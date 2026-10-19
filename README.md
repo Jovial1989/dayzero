@@ -219,5 +219,5 @@ Personas written for v1.0, with a free-text `inference_rule`, still run. Their r
 - **Protocol change:** open an issue first and describe the run that went wrong.
 
 <p align="center">
-  <a href="VISION.md">Vision</a> · <a href=".dayzero/system_protocol.md">Protocol</a> · <a href="CHANGELOG.md">Changelog</a>
+  <a href="VISION.md">Vision</a> · <a href=".dayzero/system_protocol.md">Protocol</a>
 </p>
