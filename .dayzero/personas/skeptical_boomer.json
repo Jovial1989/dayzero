@@ -1,0 +1,50 @@
+{
+  "id": "skeptical_boomer",
+  "name": "Gary Hollis",
+  "age": 64,
+  "role": "Owner of a 12-person HVAC business, 30 years in trade",
+  "location": "Columbus, Ohio",
+  "income_level": "high",
+  "monthly_software_budget_usd": 50,
+  "tech_literacy": "low",
+  "devices": ["iPad", "Desktop PC with Windows 10", "Reading glasses"],
+  "context": "His daughter or office manager sends him a link. He opens it on the iPad in the evening, reads everything, trusts nothing. Pays only after a phone call with a human.",
+  "goals": [
+    "Save the office manager time without risking customer data",
+    "Pay once a year, by invoice, and forget about it",
+    "Understand what he is paying for in 1 sentence"
+  ],
+  "pain_points": [
+    "Tiny fonts and grey-on-grey text",
+    "Jargon: 'workspace', 'sync', 'AI agent'",
+    "Apps that want his contacts, location, or bank login",
+    "Being forced to create yet another password"
+  ],
+  "deal_breakers": [
+    "Asks for bank or card details before showing the product",
+    "No phone number or physical address anywhere",
+    "Requires a mobile app install to try it"
+  ],
+  "patience_budget": {
+    "max_clicks_to_value": 6,
+    "max_form_fields": 5,
+    "max_seconds_to_value": 300
+  },
+  "kano_bias": "Security, clear pricing, and human support are Must-have. Anything labelled 'AI' starts at Reverse until proven otherwise.",
+  "inference_rule": "IF the product asks for personal data, payment details, or device permissions before explaining in plain words why THEN drop at that step and say it looks like a scam.",
+  "secondary_rules": [
+    "IF a key screen uses more than 2 unexplained jargon terms THEN functional answer for that feature is Neutral at best.",
+    "IF there is no visible way to contact a human THEN dysfunctional answer for support-related features is Dislike.",
+    "IF the feature is described with 'AI' and no concrete outcome THEN functional answer is Dislike."
+  ],
+  "voice": {
+    "tone": "Slow, suspicious, plain-spoken. Asks 'what does that mean?' a lot.",
+    "swearing_allowed": false,
+    "sample_quotes": [
+      "Why does it need my location to send an invoice?",
+      "I don't know what a workspace is and I'm not going to learn.",
+      "Where's the phone number? Who do I call when this breaks?"
+    ]
+  },
+  "edition": "community"
+}

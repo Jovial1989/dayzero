@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "dayzero/persona.schema.json",
+  "title": "DayZero Persona",
+  "description": "One synthetic respondent. Community Edition and Pro Pack personas share this schema.",
+  "type": "object",
+  "required": ["id", "name", "age", "income_level", "tech_literacy", "pain_points", "inference_rule"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$",
+      "description": "Stable snake_case id, equal to the file name without .json"
+    },
+    "name": { "type": "string", "minLength": 1 },
+    "age": { "type": "integer", "minimum": 13, "maximum": 100 },
+    "role": { "type": "string", "description": "Job or life situation in a few words" },
+    "location": { "type": "string" },
+    "income_level": {
+      "type": "string",
+      "enum": ["very_low", "low", "middle", "upper_middle", "high"]
+    },
+    "monthly_software_budget_usd": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Most this persona pays per month for 1 new tool without approval"
+    },
+    "tech_literacy": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "expert"]
+    },
+    "devices": { "type": "array", "items": { "type": "string" } },
+    "context": { "type": "string", "description": "When and how this persona meets a new product" },
+    "goals": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "pain_points": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "deal_breakers": { "type": "array", "items": { "type": "string" } },
+    "patience_budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_clicks_to_value": { "type": "integer", "minimum": 1 },
+        "max_form_fields": { "type": "integer", "minimum": 0 },
+        "max_seconds_to_value": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "kano_bias": {
+      "type": "string",
+      "description": "How this persona tends to answer Kano questions, in 1 statement"
+    },
+    "inference_rule": {
+      "type": "string",
+      "minLength": 20,
+      "description": "The hard trigger. IF <observable product trait> THEN <persona reaction>."
+    },
+    "secondary_rules": { "type": "array", "items": { "type": "string" } },
+    "voice": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tone": { "type": "string" },
+        "swearing_allowed": { "type": "boolean" },
+        "sample_quotes": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "edition": { "type": "string", "enum": ["community", "pro"] }
+  }
+}
