@@ -1,5 +1,5 @@
 {
-  "version": "1.1",
+  "version": "1.2",
   "measurements": [
     {
       "id": "clicks_to_value",
@@ -150,6 +150,20 @@
       "not_applicable_when": "No billing code"
     },
     {
+      "id": "install_required_to_try",
+      "category": "funnel",
+      "type": "bool",
+      "level": "product",
+      "counts": "First value needs installing something first (mobile app, desktop app, browser extension, or CLI); no web page reaches it",
+      "where_to_look": [
+        "screen",
+        "navigation",
+        "text"
+      ],
+      "inferred_when": "A web version is only mentioned in docs or README",
+      "not_applicable_when": "never"
+    },
+    {
       "id": "lowest_paid_usd_month",
       "category": "pricing",
       "type": "number",
@@ -242,6 +256,20 @@
       ],
       "inferred_when": "Routes exist but no user-facing auth for them",
       "not_applicable_when": "The product is a library"
+    },
+    {
+      "id": "data_exit_present",
+      "category": "data",
+      "type": "bool",
+      "level": "product",
+      "counts": "The user can get their own data out by at least 1 route: file export, a token-authenticated public API, or a CLI command that reads it",
+      "where_to_look": [
+        "api",
+        "screen",
+        "jobs"
+      ],
+      "inferred_when": "A route is only mentioned in docs or README",
+      "not_applicable_when": "The product stores no user data"
     },
     {
       "id": "unexplained_jargon_terms",

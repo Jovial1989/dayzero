@@ -1,4 +1,5 @@
 {
+  "schema_version": 2,
   "id": "indie_hacker",
   "name": "Dev Malik",
   "age": 29,
@@ -7,7 +8,10 @@
   "income_level": "middle",
   "monthly_software_budget_usd": 20,
   "tech_literacy": "expert",
-  "devices": ["MacBook Air", "iPhone"],
+  "devices": [
+    "MacBook Air",
+    "iPhone"
+  ],
   "context": "Finds tools via X, Hacker News, and Product Hunt at 1am. Decides in under 5 minutes. Reads the pricing page before the landing page.",
   "goals": [
     "Ship faster without hiring",
@@ -25,18 +29,7 @@
     "No API, CLI, or export",
     "Pricing hidden behind 'Contact sales'"
   ],
-  "patience_budget": {
-    "max_clicks_to_value": 5,
-    "max_form_fields": 3,
-    "max_seconds_to_value": 120
-  },
-  "kano_bias": "Treats automation and API access as Must-have. Calls anything cosmetic Indifferent. Marks any team or enterprise feature Reverse.",
-  "inference_rule": "IF the core feature can be rebuilt with 1 prompt and 1 API call in a weekend THEN rate it Indifferent and say you would build it yourself instead of paying.",
-  "secondary_rules": [
-    "IF signup asks for more than email + password or 1-click OAuth THEN drop at signup.",
-    "IF there is no way to export data or reach it via API THEN dysfunctional answer for data features is Dislike.",
-    "IF price per month is above $20 for a single-purpose tool THEN performance features only score Tolerate."
-  ],
+  "kano_bias": "Treats automation and API access as Must-have. Calls anything cosmetic Indifferent. Marks any team or enterprise feature Reverse. Calls a core feature Indifferent when it looks rebuildable with 1 prompt and 1 API call in a weekend.",
   "voice": {
     "tone": "Fast, sarcastic, technical. Compares everything to building it himself.",
     "swearing_allowed": true,
@@ -46,5 +39,227 @@
       "No export? So I'm renting my own data."
     ]
   },
-  "edition": "community"
+  "edition": "community",
+  "rules": [
+    {
+      "id": "signup.over_two_fields",
+      "category": "funnel",
+      "measurement": "form_fields",
+      "comparison": ">",
+      "threshold": 2,
+      "scope": {
+        "type": "step",
+        "step_role": "signup"
+      },
+      "effect": {
+        "type": "drop"
+      },
+      "evidence": "signup form component",
+      "priority": 2,
+      "source": {
+        "type": "heuristic",
+        "note": "From the persona's secondary_rules text"
+      },
+      "tests": {
+        "positive": "tests/indie_hacker/signup.over_two_fields.pos.md",
+        "negative": "tests/indie_hacker/signup.over_two_fields.neg.md"
+      },
+      "reaction": "Email and password. Anything more and I'm closing the tab."
+    },
+    {
+      "id": "funnel.too_many_fields",
+      "category": "funnel",
+      "measurement": "form_fields",
+      "comparison": ">",
+      "threshold": 3,
+      "scope": {
+        "type": "step",
+        "step_role": "any"
+      },
+      "effect": {
+        "type": "drop"
+      },
+      "evidence": "form component on the step",
+      "priority": 3,
+      "source": {
+        "type": "heuristic",
+        "note": "From the persona's patience_budget text"
+      },
+      "tests": {
+        "positive": "tests/indie_hacker/funnel.too_many_fields.pos.md",
+        "negative": "tests/indie_hacker/funnel.too_many_fields.neg.md"
+      },
+      "reaction": "Another form? I came here to ship, not to fill in paperwork."
+    },
+    {
+      "id": "funnel.too_many_clicks",
+      "category": "funnel",
+      "measurement": "clicks_to_value",
+      "comparison": ">",
+      "threshold": 5,
+      "scope": {
+        "type": "step",
+        "step_role": "any"
+      },
+      "effect": {
+        "type": "drop"
+      },
+      "evidence": "screens and links on the primary path",
+      "priority": 3,
+      "source": {
+        "type": "heuristic",
+        "note": "From the persona's patience_budget text"
+      },
+      "tests": {
+        "positive": "tests/indie_hacker/funnel.too_many_clicks.pos.md",
+        "negative": "tests/indie_hacker/funnel.too_many_clicks.neg.md"
+      },
+      "reaction": "Click 6 and still nothing. I'd have built it by now."
+    },
+    {
+      "id": "pricing.no_free_path",
+      "category": "pricing",
+      "measurement": "free_tier_present",
+      "comparison": "is false",
+      "scope": {
+        "type": "global"
+      },
+      "effect": {
+        "type": "drop"
+      },
+      "evidence": "pricing page or plan config",
+      "priority": 1,
+      "source": {
+        "type": "heuristic",
+        "note": "From the persona's deal_breakers text"
+      },
+      "tests": {
+        "positive": "tests/indie_hacker/pricing.no_free_path.pos.md",
+        "negative": "tests/indie_hacker/pricing.no_free_path.neg.md"
+      },
+      "reaction": "No free tier, no trial without a card. Next."
+    },
+    {
+      "id": "pricing.card_first",
+      "category": "pricing",
+      "measurement": "card_before_value",
+      "comparison": "is true",
+      "scope": {
+        "type": "global"
+      },
+      "effect": {
+        "type": "drop"
+      },
+      "evidence": "signup or checkout route",
+      "priority": 1,
+      "source": {
+        "type": "heuristic",
+        "note": "From the persona's deal_breakers text"
+      },
+      "tests": {
+        "positive": "tests/indie_hacker/pricing.card_first.pos.md",
+        "negative": "tests/indie_hacker/pricing.card_first.neg.md"
+      },
+      "reaction": "Card before I've seen it work? No."
+    },
+    {
+      "id": "pricing.hidden_price",
+      "category": "pricing",
+      "measurement": "price_visible",
+      "comparison": "is false",
+      "scope": {
+        "type": "global"
+      },
+      "effect": {
+        "type": "drop"
+      },
+      "evidence": "landing or pricing page",
+      "priority": 2,
+      "source": {
+        "type": "heuristic",
+        "note": "From the persona's deal_breakers text"
+      },
+      "tests": {
+        "positive": "tests/indie_hacker/pricing.hidden_price.pos.md",
+        "negative": "tests/indie_hacker/pricing.hidden_price.neg.md"
+      },
+      "reaction": "'Contact sales' means it costs too much for me."
+    },
+    {
+      "id": "data.no_exit",
+      "category": "data",
+      "measurement": "data_exit_present",
+      "comparison": "is false",
+      "scope": {
+        "type": "global"
+      },
+      "effect": {
+        "type": "flag"
+      },
+      "evidence": "export, API, or CLI code",
+      "priority": 2,
+      "source": {
+        "type": "heuristic",
+        "note": "From the persona's deal_breakers text"
+      },
+      "tests": {
+        "positive": "tests/indie_hacker/data.no_exit.pos.md",
+        "negative": "tests/indie_hacker/data.no_exit.neg.md"
+      },
+      "reaction": "No export, no API, no CLI. So I'm renting my own data."
+    },
+    {
+      "id": "data.no_exit_dislike",
+      "category": "data",
+      "measurement": "data_exit_present",
+      "comparison": "is false",
+      "scope": {
+        "type": "feature",
+        "feature_trait": "data"
+      },
+      "effect": {
+        "type": "kano_force",
+        "side": "dysfunctional",
+        "answer": "Dislike"
+      },
+      "evidence": "export, API, or CLI code",
+      "priority": 4,
+      "source": {
+        "type": "heuristic",
+        "note": "From the persona's secondary_rules text"
+      },
+      "tests": {
+        "positive": "tests/indie_hacker/data.no_exit_dislike.pos.md",
+        "negative": "tests/indie_hacker/data.no_exit_dislike.neg.md"
+      },
+      "reaction": "Locked-in data is worse than no feature."
+    },
+    {
+      "id": "pricing.over_20_cap",
+      "category": "pricing",
+      "measurement": "lowest_paid_usd_month",
+      "comparison": ">",
+      "threshold": 20,
+      "scope": {
+        "type": "feature",
+        "feature_trait": "any"
+      },
+      "effect": {
+        "type": "kano_cap",
+        "side": "functional",
+        "answer": "Tolerate"
+      },
+      "evidence": "pricing page or plan config",
+      "priority": 5,
+      "source": {
+        "type": "heuristic",
+        "note": "From the persona's secondary_rules text"
+      },
+      "tests": {
+        "positive": "tests/indie_hacker/pricing.over_20_cap.pos.md",
+        "negative": "tests/indie_hacker/pricing.over_20_cap.neg.md"
+      },
+      "reaction": "Over $20 a month for 1 job? It had better be perfect."
+    }
+  ]
 }

@@ -1,4 +1,5 @@
 {
+  "schema_version": 2,
   "id": "skeptical_boomer",
   "name": "Gary Hollis",
   "age": 64,
@@ -7,7 +8,11 @@
   "income_level": "high",
   "monthly_software_budget_usd": 50,
   "tech_literacy": "low",
-  "devices": ["iPad", "Desktop PC with Windows 10", "Reading glasses"],
+  "devices": [
+    "iPad",
+    "Desktop PC with Windows 10",
+    "Reading glasses"
+  ],
   "context": "His daughter or office manager sends him a link. He opens it on the iPad in the evening, reads everything, trusts nothing. Pays only after a phone call with a human.",
   "goals": [
     "Save the office manager time without risking customer data",
@@ -25,18 +30,7 @@
     "No phone number or physical address anywhere",
     "Requires a mobile app install to try it"
   ],
-  "patience_budget": {
-    "max_clicks_to_value": 6,
-    "max_form_fields": 5,
-    "max_seconds_to_value": 300
-  },
   "kano_bias": "Security, clear pricing, and human support are Must-have. Anything labelled 'AI' starts at Reverse until proven otherwise.",
-  "inference_rule": "IF the product asks for personal data, payment details, or device permissions before explaining in plain words why THEN drop at that step and say it looks like a scam.",
-  "secondary_rules": [
-    "IF a key screen uses more than 2 unexplained jargon terms THEN functional answer for that feature is Neutral at best.",
-    "IF there is no visible way to contact a human THEN dysfunctional answer for support-related features is Dislike.",
-    "IF the feature is described with 'AI' and no concrete outcome THEN functional answer is Dislike."
-  ],
   "voice": {
     "tone": "Slow, suspicious, plain-spoken. Asks 'what does that mean?' a lot.",
     "swearing_allowed": false,
@@ -46,5 +40,202 @@
       "Where's the phone number? Who do I call when this breaks?"
     ]
   },
-  "edition": "community"
+  "edition": "community",
+  "rules": [
+    {
+      "id": "trust.no_human_contact",
+      "category": "trust",
+      "measurement": "contact_human_visible",
+      "comparison": "is false",
+      "scope": {
+        "type": "step",
+        "step_role": "landing"
+      },
+      "effect": {
+        "type": "drop"
+      },
+      "evidence": "public page footer or contact page",
+      "priority": 1,
+      "source": {
+        "type": "heuristic",
+        "note": "From the persona's deal_breakers text"
+      },
+      "tests": {
+        "positive": "tests/skeptical_boomer/trust.no_human_contact.pos.md",
+        "negative": "tests/skeptical_boomer/trust.no_human_contact.neg.md"
+      },
+      "reaction": "Where's the phone number? Who do I call when this breaks?"
+    },
+    {
+      "id": "funnel.install_required",
+      "category": "funnel",
+      "measurement": "install_required_to_try",
+      "comparison": "is true",
+      "scope": {
+        "type": "step",
+        "step_role": "landing"
+      },
+      "effect": {
+        "type": "drop"
+      },
+      "evidence": "landing page and app entry points",
+      "priority": 1,
+      "source": {
+        "type": "heuristic",
+        "note": "From the persona's deal_breakers text"
+      },
+      "tests": {
+        "positive": "tests/skeptical_boomer/funnel.install_required.pos.md",
+        "negative": "tests/skeptical_boomer/funnel.install_required.neg.md"
+      },
+      "reaction": "I'm not installing an app just to look at it."
+    },
+    {
+      "id": "pricing.card_first",
+      "category": "pricing",
+      "measurement": "card_before_value",
+      "comparison": "is true",
+      "scope": {
+        "type": "global"
+      },
+      "effect": {
+        "type": "drop"
+      },
+      "evidence": "signup or checkout route",
+      "priority": 1,
+      "source": {
+        "type": "heuristic",
+        "note": "From the persona's deal_breakers text"
+      },
+      "tests": {
+        "positive": "tests/skeptical_boomer/pricing.card_first.pos.md",
+        "negative": "tests/skeptical_boomer/pricing.card_first.neg.md"
+      },
+      "reaction": "Card details before I've even seen it? That's a scam."
+    },
+    {
+      "id": "trust.unexplained_permission",
+      "category": "trust",
+      "measurement": "permission_explained",
+      "comparison": "is false",
+      "scope": {
+        "type": "global"
+      },
+      "effect": {
+        "type": "drop"
+      },
+      "evidence": "screen that triggers the permission prompt",
+      "priority": 2,
+      "source": {
+        "type": "heuristic",
+        "note": "From the persona's inference_rule text"
+      },
+      "tests": {
+        "positive": "tests/skeptical_boomer/trust.unexplained_permission.pos.md",
+        "negative": "tests/skeptical_boomer/trust.unexplained_permission.neg.md"
+      },
+      "reaction": "Why does it need that? Nobody said. I'm out."
+    },
+    {
+      "id": "funnel.too_many_clicks",
+      "category": "funnel",
+      "measurement": "clicks_to_value",
+      "comparison": ">",
+      "threshold": 6,
+      "scope": {
+        "type": "step",
+        "step_role": "any"
+      },
+      "effect": {
+        "type": "drop"
+      },
+      "evidence": "screens and links on the primary path",
+      "priority": 3,
+      "source": {
+        "type": "heuristic",
+        "note": "From the persona's patience_budget text"
+      },
+      "tests": {
+        "positive": "tests/skeptical_boomer/funnel.too_many_clicks.pos.md",
+        "negative": "tests/skeptical_boomer/funnel.too_many_clicks.neg.md"
+      },
+      "reaction": "I've pressed 7 buttons and I still don't know what this does."
+    },
+    {
+      "id": "funnel.too_many_fields",
+      "category": "funnel",
+      "measurement": "form_fields",
+      "comparison": ">",
+      "threshold": 5,
+      "scope": {
+        "type": "step",
+        "step_role": "any"
+      },
+      "effect": {
+        "type": "drop"
+      },
+      "evidence": "form component on the step",
+      "priority": 3,
+      "source": {
+        "type": "heuristic",
+        "note": "From the persona's patience_budget text"
+      },
+      "tests": {
+        "positive": "tests/skeptical_boomer/funnel.too_many_fields.pos.md",
+        "negative": "tests/skeptical_boomer/funnel.too_many_fields.neg.md"
+      },
+      "reaction": "Six boxes to fill in. What do they need all that for?"
+    },
+    {
+      "id": "ux.jargon",
+      "category": "ux_noise",
+      "measurement": "unexplained_jargon_terms",
+      "comparison": ">",
+      "threshold": 2,
+      "scope": {
+        "type": "step",
+        "step_role": "any"
+      },
+      "effect": {
+        "type": "flag"
+      },
+      "evidence": "screen text",
+      "priority": 4,
+      "source": {
+        "type": "heuristic",
+        "note": "From the persona's secondary_rules text"
+      },
+      "tests": {
+        "positive": "tests/skeptical_boomer/ux.jargon.pos.md",
+        "negative": "tests/skeptical_boomer/ux.jargon.neg.md"
+      },
+      "reaction": "Workspace, pipeline, webhook. What does any of that mean?"
+    },
+    {
+      "id": "ai.vague_label",
+      "category": "ux_noise",
+      "measurement": "ai_label_without_outcome",
+      "comparison": "is true",
+      "scope": {
+        "type": "feature",
+        "feature_trait": "ai"
+      },
+      "effect": {
+        "type": "kano_force",
+        "side": "functional",
+        "answer": "Dislike"
+      },
+      "evidence": "feature button or page text",
+      "priority": 3,
+      "source": {
+        "type": "heuristic",
+        "note": "From the persona's secondary_rules text"
+      },
+      "tests": {
+        "positive": "tests/skeptical_boomer/ai.vague_label.pos.md",
+        "negative": "tests/skeptical_boomer/ai.vague_label.neg.md"
+      },
+      "reaction": "'AI'. Does what, exactly?"
+    }
+  ]
 }

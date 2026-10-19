@@ -18,7 +18,7 @@ Flow not traceable or not found: Section 1 verdict = that n/a; Sections 2 and 3 
 | Other apps | [per app: "path (stack_id): @.dayzero validate --app path", or "none"] |
 | Assistant / model | [e.g. Cursor + claude-sonnet-5-5] |
 | Protocol | DayZero System Protocol v1.2 |
-| Glossary | [version from measurements.json] |
+| Glossary | [version from measurements.json; add "+ pro [version]" when measurements.pro.json is loaded] |
 | Answer list | [version from kano_answers.json] |
 | Personas (N) | [N] ([comma-separated persona ids]; mark legacy ones `(legacy)`) |
 | Confidence | [directional / indicative / broad] |

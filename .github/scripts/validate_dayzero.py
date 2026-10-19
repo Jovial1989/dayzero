@@ -48,7 +48,15 @@ def main():
 
     measurements = check_schema(dz / "measurements.json", dz / "measurements.schema.json", root)
     check_schema(dz / "kano_answers.json", dz / "kano_answers.schema.json", root)
-    measurement_ids = {m.get("id") for m in (measurements or {}).get("measurements", []) if isinstance(m, dict)}
+    glossary = {m.get("id"): m for m in (measurements or {}).get("measurements", []) if isinstance(m, dict)}
+    pro_path = dz / "measurements.pro.json"
+    if pro_path.exists():
+        pro = check_schema(pro_path, dz / "measurements.schema.json", root)
+        for m in (pro or {}).get("measurements", []):
+            if isinstance(m, dict) and m.get("id") in glossary:
+                fail(pro_path.relative_to(root), f"measurement '{m.get('id')}' already exists in measurements.json")
+            elif isinstance(m, dict):
+                glossary[m.get("id")] = m
 
     persona_schema = dz / "personas" / "persona.schema.json"
     for path in sorted((dz / "personas").glob("*.json")):
@@ -67,8 +75,22 @@ def main():
                 fail(rel, f"rules/{i}: duplicate rule id '{rid}'")
             seen.add(rid)
             mid = rule.get("measurement")
-            if measurements is not None and mid not in measurement_ids:
-                fail(rel, f"rules/{i}: measurement '{mid}' is not in .dayzero/measurements.json")
+            if measurements is None:
+                continue
+            if mid not in glossary:
+                fail(rel, f"rules/{i}: measurement '{mid}' is not in the glossary")
+                continue
+            m = glossary[mid]
+            is_bool_cmp = rule.get("comparison") in ("is true", "is false")
+            if (m.get("type") == "bool") != is_bool_cmp:
+                fail(rel, f"rules/{i}: comparison '{rule.get('comparison')}' does not fit {m.get('type')} measurement '{mid}'")
+            level = m.get("level", "product")
+            scope = (rule.get("scope") or {}).get("type")
+            if level in ("step", "feature") and scope != level:
+                fail(rel, f"rules/{i}: scope '{scope}' does not fit {level}-level measurement '{mid}'")
+            for kind, t in (rule.get("tests") or {}).items():
+                if not (dz / "personas" / t).exists():
+                    fail(rel, f"rules/{i}: {kind} test '{t}' not found")
 
     for path in sorted((dz / "stacks").glob("*.md")):
         rel = path.relative_to(root)

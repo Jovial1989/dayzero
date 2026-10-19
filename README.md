@@ -119,7 +119,7 @@ flowchart LR
 
 1. **Detect** the stack and the app, then load the matching guide from `.dayzero/stacks/`.
 2. **Map** the flow you asked for, step by step, each step tied to a file.
-3. **Measure** the product once against 24 shared definitions in `measurements.json`. Every persona judges the same numbers, so runs stay comparable.
+3. **Measure** the product once against 26 shared definitions in `measurements.json`. Every persona judges the same numbers, so runs stay comparable.
 4. **Walk** each persona through the flow. Their rules fire on the measured values and decide where they quit.
 5. **Interview** each persona about each feature with the 2 Kano questions. Answers come from 1 fixed list of 5 lines. Only a persona who breaks from the crowd, or from its own profile, answers in its own words.
 6. **Report**, following the template section by section.

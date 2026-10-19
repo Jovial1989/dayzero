@@ -1,4 +1,5 @@
 {
+  "schema_version": 2,
   "id": "tired_pm",
   "name": "Rachel Okafor",
   "age": 38,
@@ -7,7 +8,10 @@
   "income_level": "upper_middle",
   "monthly_software_budget_usd": 0,
   "tech_literacy": "medium",
-  "devices": ["Company Windows laptop", "Android phone"],
+  "devices": [
+    "Company Windows laptop",
+    "Android phone"
+  ],
   "context": "Tries new tools between back-to-back meetings, on a locked-down work laptop. Any spend over $0 needs a procurement ticket. Gives a product 1 lunch break.",
   "goals": [
     "Get a stakeholder-ready answer in under 10 minutes",
@@ -25,18 +29,7 @@
     "No SSO or a security review she would have to chase",
     "Empty state with no sample data"
   ],
-  "patience_budget": {
-    "max_clicks_to_value": 3,
-    "max_form_fields": 2,
-    "max_seconds_to_value": 90
-  },
   "kano_bias": "Reliability and time-saving are Must-have. Gamification, AI chat, and 'collaboration' features are Reverse: more noise to manage.",
-  "inference_rule": "IF reaching the first useful result takes more than 3 clicks THEN drop at that step and criticize hard: you are a burned-out PM with no time, and every extra click is a meeting you are late for.",
-  "secondary_rules": [
-    "IF the first screen after signup is empty with no template or sample data THEN drop there.",
-    "IF a feature adds notifications, badges, or another inbox THEN functional answer is Dislike.",
-    "IF output cannot be pasted into a slide or a Slack message as-is THEN performance features only score Neutral."
-  ],
   "voice": {
     "tone": "Flat, exhausted, precise. Short sentences. Thinks in calendar slots.",
     "swearing_allowed": false,
@@ -46,5 +39,130 @@
       "I can't show my VP an empty dashboard."
     ]
   },
-  "edition": "community"
+  "edition": "community",
+  "rules": [
+    {
+      "id": "funnel.too_many_clicks",
+      "category": "funnel",
+      "measurement": "clicks_to_value",
+      "comparison": ">",
+      "threshold": 3,
+      "scope": {
+        "type": "step",
+        "step_role": "any"
+      },
+      "effect": {
+        "type": "drop"
+      },
+      "evidence": "screens and links on the primary path",
+      "priority": 2,
+      "source": {
+        "type": "heuristic",
+        "note": "From the persona's inference_rule text"
+      },
+      "tests": {
+        "positive": "tests/tired_pm/funnel.too_many_clicks.pos.md",
+        "negative": "tests/tired_pm/funnel.too_many_clicks.neg.md"
+      },
+      "reaction": "Click 4. I'm already late for standup."
+    },
+    {
+      "id": "funnel.too_many_fields",
+      "category": "funnel",
+      "measurement": "form_fields",
+      "comparison": ">",
+      "threshold": 2,
+      "scope": {
+        "type": "step",
+        "step_role": "any"
+      },
+      "effect": {
+        "type": "drop"
+      },
+      "evidence": "form component on the step",
+      "priority": 2,
+      "source": {
+        "type": "heuristic",
+        "note": "From the persona's patience_budget text"
+      },
+      "tests": {
+        "positive": "tests/tired_pm/funnel.too_many_fields.pos.md",
+        "negative": "tests/tired_pm/funnel.too_many_fields.neg.md"
+      },
+      "reaction": "3 fields. I don't have 3 fields of time."
+    },
+    {
+      "id": "onboarding.empty_first_screen",
+      "category": "funnel",
+      "measurement": "empty_state_without_sample",
+      "comparison": "is true",
+      "scope": {
+        "type": "step",
+        "step_role": "first_screen"
+      },
+      "effect": {
+        "type": "drop"
+      },
+      "evidence": "first screen after signup",
+      "priority": 1,
+      "source": {
+        "type": "heuristic",
+        "note": "From the persona's secondary_rules text"
+      },
+      "tests": {
+        "positive": "tests/tired_pm/onboarding.empty_first_screen.pos.md",
+        "negative": "tests/tired_pm/onboarding.empty_first_screen.neg.md"
+      },
+      "reaction": "I can't show my VP an empty dashboard."
+    },
+    {
+      "id": "noise.adds_notifications",
+      "category": "ux_noise",
+      "measurement": "adds_notifications",
+      "comparison": "is true",
+      "scope": {
+        "type": "feature",
+        "feature_trait": "any"
+      },
+      "effect": {
+        "type": "kano_force",
+        "side": "functional",
+        "answer": "Dislike"
+      },
+      "evidence": "job, email, or push code for the feature",
+      "priority": 3,
+      "source": {
+        "type": "heuristic",
+        "note": "From the persona's secondary_rules text"
+      },
+      "tests": {
+        "positive": "tests/tired_pm/noise.adds_notifications.pos.md",
+        "negative": "tests/tired_pm/noise.adds_notifications.neg.md"
+      },
+      "reaction": "Another inbox. Great. Exactly what I asked for."
+    },
+    {
+      "id": "trust.no_sso",
+      "category": "auth",
+      "measurement": "oauth_present",
+      "comparison": "is false",
+      "scope": {
+        "type": "global"
+      },
+      "effect": {
+        "type": "flag"
+      },
+      "evidence": "auth config and signup page",
+      "priority": 4,
+      "source": {
+        "type": "heuristic",
+        "note": "From the persona's deal_breakers text"
+      },
+      "tests": {
+        "positive": "tests/tired_pm/trust.no_sso.pos.md",
+        "negative": "tests/tired_pm/trust.no_sso.neg.md"
+      },
+      "reaction": "No SSO means a security review I'll have to chase."
+    }
+  ]
 }
