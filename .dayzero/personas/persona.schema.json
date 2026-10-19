@@ -1,67 +1,475 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "dayzero/persona.schema.json",
-  "title": "DayZero Persona",
-  "description": "One synthetic respondent. Community Edition and Pro Pack personas share this schema.",
+  "title": "DayZero Persona v2",
+  "description": "1 synthetic respondent with structured rules. Legacy v1 personas (inference_rule only) stay valid.",
   "type": "object",
-  "required": ["id", "name", "age", "income_level", "tech_literacy", "pain_points", "inference_rule"],
+  "required": [
+    "id",
+    "name",
+    "age",
+    "income_level",
+    "tech_literacy",
+    "pain_points"
+  ],
+  "anyOf": [
+    {
+      "required": [
+        "rules"
+      ]
+    },
+    {
+      "required": [
+        "inference_rule"
+      ]
+    }
+  ],
   "additionalProperties": false,
   "properties": {
+    "schema_version": {
+      "const": 2
+    },
     "id": {
       "type": "string",
-      "pattern": "^[a-z0-9_]+$",
-      "description": "Stable snake_case id, equal to the file name without .json"
+      "pattern": "^[a-z0-9_]+$"
     },
-    "name": { "type": "string", "minLength": 1 },
-    "age": { "type": "integer", "minimum": 13, "maximum": 100 },
-    "role": { "type": "string", "description": "Job or life situation in a few words" },
-    "location": { "type": "string" },
-    "income_level": {
+    "name": {
       "type": "string",
-      "enum": ["very_low", "low", "middle", "upper_middle", "high"]
+      "minLength": 1
+    },
+    "age": {
+      "type": "integer",
+      "minimum": 13,
+      "maximum": 100
+    },
+    "gender": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "income_level": {
+      "enum": [
+        "very_low",
+        "low",
+        "middle",
+        "upper_middle",
+        "high"
+      ]
     },
     "monthly_software_budget_usd": {
       "type": "number",
-      "minimum": 0,
-      "description": "Most this persona pays per month for 1 new tool without approval"
+      "minimum": 0
     },
     "tech_literacy": {
-      "type": "string",
-      "enum": ["low", "medium", "high", "expert"]
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "expert"
+      ]
     },
-    "devices": { "type": "array", "items": { "type": "string" } },
-    "context": { "type": "string", "description": "When and how this persona meets a new product" },
-    "goals": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
-    "pain_points": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
-    "deal_breakers": { "type": "array", "items": { "type": "string" } },
-    "patience_budget": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "max_clicks_to_value": { "type": "integer", "minimum": 1 },
-        "max_form_fields": { "type": "integer", "minimum": 0 },
-        "max_seconds_to_value": { "type": "integer", "minimum": 1 }
+    "devices": {
+      "type": "array",
+      "items": {
+        "type": "string"
       }
     },
+    "context": {
+      "type": "string"
+    },
+    "goals": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "pain_points": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "deal_breakers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Narrative only in v2. Behaviour comes from rules"
+    },
     "kano_bias": {
-      "type": "string",
-      "description": "How this persona tends to answer Kano questions, in 1 statement"
+      "type": "string"
     },
-    "inference_rule": {
-      "type": "string",
-      "minLength": 20,
-      "description": "The hard trigger. IF <observable product trait> THEN <persona reaction>."
-    },
-    "secondary_rules": { "type": "array", "items": { "type": "string" } },
     "voice": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "tone": { "type": "string" },
-        "swearing_allowed": { "type": "boolean" },
-        "sample_quotes": { "type": "array", "items": { "type": "string" } }
+        "tone": {
+          "type": "string"
+        },
+        "swearing_allowed": {
+          "type": "boolean"
+        },
+        "sample_quotes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
       }
     },
-    "edition": { "type": "string", "enum": ["community", "pro"] }
+    "edition": {
+      "enum": [
+        "community",
+        "pro"
+      ]
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/rule"
+      }
+    },
+    "inference_rule": {
+      "type": "string",
+      "minLength": 20,
+      "description": "LEGACY v1. Fires labelled 'legacy, unmeasured'"
+    },
+    "secondary_rules": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "LEGACY v1"
+    },
+    "patience_budget": {
+      "type": "object",
+      "description": "LEGACY v1. Replace with rules on clicks_to_value / form_fields"
+    }
+  },
+  "$defs": {
+    "answer": {
+      "enum": [
+        "Like",
+        "Expect",
+        "Neutral",
+        "Tolerate",
+        "Dislike"
+      ]
+    },
+    "rule": {
+      "type": "object",
+      "required": [
+        "id",
+        "category",
+        "measurement",
+        "comparison",
+        "scope",
+        "effect",
+        "evidence",
+        "priority",
+        "source",
+        "tests",
+        "reaction"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9_.]+$",
+          "description": "Unique within this persona"
+        },
+        "category": {
+          "enum": [
+            "funnel",
+            "auth",
+            "pricing",
+            "trust",
+            "data",
+            "ux_noise"
+          ]
+        },
+        "measurement": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$",
+          "description": "Id from .dayzero/measurements.json"
+        },
+        "comparison": {
+          "enum": [
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "=",
+            "is true",
+            "is false"
+          ]
+        },
+        "threshold": {
+          "type": "number"
+        },
+        "scope": {
+          "type": "object",
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "enum": [
+                "step",
+                "feature",
+                "global"
+              ]
+            },
+            "step_role": {
+              "enum": [
+                "landing",
+                "signup",
+                "verify",
+                "onboarding",
+                "first_screen",
+                "first_value",
+                "pricing",
+                "checkout",
+                "upgrade_offer",
+                "paid_active",
+                "invite_send",
+                "invitee_join",
+                "invitee_value",
+                "reentry",
+                "signin",
+                "resume_value",
+                "any"
+              ]
+            },
+            "feature_trait": {
+              "type": "string",
+              "description": "e.g. ai, team, notifications, data, gamification, any"
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "step"
+                  }
+                }
+              },
+              "then": {
+                "required": [
+                  "step_role"
+                ]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "feature"
+                  }
+                }
+              },
+              "then": {
+                "required": [
+                  "feature_trait"
+                ]
+              }
+            }
+          ]
+        },
+        "effect": {
+          "type": "object",
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "enum": [
+                "drop",
+                "kano_force",
+                "kano_cap",
+                "flag"
+              ]
+            },
+            "side": {
+              "enum": [
+                "functional",
+                "dysfunctional"
+              ]
+            },
+            "answer": {
+              "$ref": "#/$defs/answer"
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "enum": [
+                      "kano_force",
+                      "kano_cap"
+                    ]
+                  }
+                }
+              },
+              "then": {
+                "required": [
+                  "side",
+                  "answer"
+                ]
+              }
+            }
+          ]
+        },
+        "evidence": {
+          "type": "string",
+          "description": "What file the run must cite, e.g. 'signup form component'"
+        },
+        "priority": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9,
+          "description": "1 = highest"
+        },
+        "source": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "type",
+                "title",
+                "url",
+                "checked"
+              ],
+              "properties": {
+                "type": {
+                  "const": "public"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                },
+                "checked": {
+                  "type": "string",
+                  "format": "date"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "type",
+                "method",
+                "n",
+                "collected",
+                "summary"
+              ],
+              "properties": {
+                "type": {
+                  "const": "own"
+                },
+                "method": {
+                  "enum": [
+                    "interview",
+                    "analytics"
+                  ]
+                },
+                "n": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "collected": {
+                  "type": "string"
+                },
+                "summary": {
+                  "type": "string",
+                  "description": "Anonymized. No names, companies, identifying quotes"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "type"
+              ],
+              "properties": {
+                "type": {
+                  "const": "heuristic"
+                },
+                "note": {
+                  "type": "string"
+                }
+              }
+            }
+          ]
+        },
+        "tests": {
+          "type": "object",
+          "required": [
+            "positive",
+            "negative"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "positive": {
+              "type": "string",
+              "pattern": "^tests/[a-z0-9_]+/[a-z0-9_.]+\\.pos\\.md$"
+            },
+            "negative": {
+              "type": "string",
+              "pattern": "^tests/[a-z0-9_]+/[a-z0-9_.]+\\.neg\\.md$"
+            }
+          }
+        },
+        "reaction": {
+          "type": "string",
+          "description": "What the persona says when the rule fires, in voice"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "comparison": {
+                "enum": [
+                  ">",
+                  ">=",
+                  "<",
+                  "<=",
+                  "="
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "threshold"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "threshold"
+              ]
+            }
+          }
+        }
+      ]
+    }
   }
 }

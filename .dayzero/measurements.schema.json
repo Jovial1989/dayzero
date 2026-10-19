@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "dayzero/measurements.schema.json",
+  "title": "DayZero Measurement Glossary",
+  "type": "object",
+  "required": [
+    "version",
+    "measurements"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+$"
+    },
+    "measurements": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "category",
+          "type",
+          "counts",
+          "where_to_look",
+          "inferred_when",
+          "not_applicable_when"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+$"
+          },
+          "category": {
+            "enum": [
+              "funnel",
+              "auth",
+              "pricing",
+              "trust",
+              "data",
+              "ux_noise"
+            ]
+          },
+          "type": {
+            "enum": [
+              "count",
+              "bool",
+              "number"
+            ]
+          },
+          "unit": {
+            "type": "string",
+            "description": "Required for type number, e.g. usd_per_month, px"
+          },
+          "level": {
+            "enum": [
+              "step",
+              "feature",
+              "product"
+            ],
+            "description": "Where the value is taken. Default product"
+          },
+          "counts": {
+            "type": "string",
+            "description": "Exactly what is counted or checked"
+          },
+          "where_to_look": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "screen",
+                "navigation",
+                "form",
+                "auth",
+                "billing",
+                "permission",
+                "text",
+                "styles",
+                "api",
+                "jobs"
+              ]
+            }
+          },
+          "inferred_when": {
+            "type": "string"
+          },
+          "not_applicable_when": {
+            "type": "string"
+          }
+        },
+        "if": {
+          "properties": {
+            "type": {
+              "const": "number"
+            }
+          }
+        },
+        "then": {
+          "required": [
+            "unit"
+          ]
+        }
+      }
+    }
+  }
+}

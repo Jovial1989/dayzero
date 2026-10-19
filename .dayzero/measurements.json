@@ -1,0 +1,325 @@
+{
+  "version": "1.1",
+  "measurements": [
+    {
+      "id": "clicks_to_value",
+      "category": "funnel",
+      "type": "count",
+      "level": "step",
+      "counts": "Cumulative user interactions (click, tap, submit, opening an email link) from the first screen up to and including this step. Typing inside a field is not a click; submitting the form is 1.",
+      "where_to_look": [
+        "screen",
+        "navigation",
+        "auth"
+      ],
+      "inferred_when": "A step is reached through a conditional route or an external page (checkout, OAuth, email) whose clicks are not in the repo",
+      "not_applicable_when": "The product has no interactive flow (pure library or API)"
+    },
+    {
+      "id": "steps_to_value",
+      "category": "funnel",
+      "type": "count",
+      "level": "product",
+      "counts": "Number of distinct screens or pages from the first screen to first value, both included",
+      "where_to_look": [
+        "screen",
+        "navigation"
+      ],
+      "inferred_when": "First value is not a single identifiable screen",
+      "not_applicable_when": "No UI"
+    },
+    {
+      "id": "form_fields",
+      "category": "funnel",
+      "type": "count",
+      "level": "step",
+      "counts": "Required input fields the user must fill to leave this step. Optional fields and hidden inputs do not count. A password with confirmation counts 2",
+      "where_to_look": [
+        "form",
+        "api"
+      ],
+      "inferred_when": "Required-ness is enforced only server-side and is unclear",
+      "not_applicable_when": "The step has no form"
+    },
+    {
+      "id": "wait_required",
+      "category": "funnel",
+      "type": "bool",
+      "level": "step",
+      "counts": "The user must wait for something outside the product to continue (email, SMS, manual approval, sales call)",
+      "where_to_look": [
+        "screen",
+        "auth",
+        "navigation",
+        "jobs"
+      ],
+      "inferred_when": "The wait depends on configuration not in the repo",
+      "not_applicable_when": "No UI"
+    },
+    {
+      "id": "empty_state_without_sample",
+      "category": "funnel",
+      "type": "bool",
+      "level": "step",
+      "counts": "The first screen after signup shows no data and offers no sample data, template, or demo content",
+      "where_to_look": [
+        "screen",
+        "jobs"
+      ],
+      "inferred_when": "Content depends on data created by a process not in the repo",
+      "not_applicable_when": "No signed-in area"
+    },
+    {
+      "id": "oauth_present",
+      "category": "auth",
+      "type": "bool",
+      "level": "product",
+      "counts": "At least 1 third-party sign-in (Google, GitHub, Apple, Microsoft, SSO) is wired in code and reachable from the signup or login screen",
+      "where_to_look": [
+        "auth",
+        "screen"
+      ],
+      "inferred_when": "Provider is configured but no button or route reaches it",
+      "not_applicable_when": "The product has no accounts"
+    },
+    {
+      "id": "email_domain_restricted",
+      "category": "auth",
+      "type": "bool",
+      "level": "product",
+      "counts": "Signup rejects some email domains (for example personal email providers)",
+      "where_to_look": [
+        "form",
+        "auth",
+        "api"
+      ],
+      "inferred_when": "Restriction is in an external auth service config",
+      "not_applicable_when": "No email signup"
+    },
+    {
+      "id": "password_constraints",
+      "category": "auth",
+      "type": "count",
+      "level": "product",
+      "counts": "Number of password rules beyond a minimum of 8 characters (longer minimum, symbol, digit, case, no reuse)",
+      "where_to_look": [
+        "form",
+        "auth"
+      ],
+      "inferred_when": "Rules live in an external auth service",
+      "not_applicable_when": "No password auth"
+    },
+    {
+      "id": "email_verification_required",
+      "category": "auth",
+      "type": "bool",
+      "level": "product",
+      "counts": "The user cannot reach first value before verifying their email",
+      "where_to_look": [
+        "navigation",
+        "auth",
+        "screen"
+      ],
+      "inferred_when": "Verification is enforced by an external auth service",
+      "not_applicable_when": "No accounts"
+    },
+    {
+      "id": "free_tier_present",
+      "category": "pricing",
+      "type": "bool",
+      "level": "product",
+      "counts": "A plan or mode exists that reaches first value without paying and without a card",
+      "where_to_look": [
+        "billing",
+        "screen"
+      ],
+      "inferred_when": "Plans come from a billing provider config not in the repo",
+      "not_applicable_when": "The product is free and has no billing code"
+    },
+    {
+      "id": "card_before_value",
+      "category": "pricing",
+      "type": "bool",
+      "level": "product",
+      "counts": "Card or payment details are required before first value on the default path",
+      "where_to_look": [
+        "billing",
+        "screen"
+      ],
+      "inferred_when": "Checkout settings live in the billing provider dashboard",
+      "not_applicable_when": "No billing code"
+    },
+    {
+      "id": "lowest_paid_usd_month",
+      "category": "pricing",
+      "type": "number",
+      "unit": "usd_per_month",
+      "level": "product",
+      "counts": "Lowest monthly price for 1 user on any paid plan, converted to USD per month",
+      "where_to_look": [
+        "billing",
+        "screen"
+      ],
+      "inferred_when": "Price is only a provider price id with no visible amount",
+      "not_applicable_when": "No paid plan"
+    },
+    {
+      "id": "price_visible",
+      "category": "pricing",
+      "type": "bool",
+      "level": "product",
+      "counts": "A price amount is shown to visitors before signup (not 'Contact sales')",
+      "where_to_look": [
+        "screen",
+        "text",
+        "billing"
+      ],
+      "inferred_when": "Pricing is rendered from a CMS not in the repo",
+      "not_applicable_when": "No paid plan"
+    },
+    {
+      "id": "contact_human_visible",
+      "category": "trust",
+      "type": "bool",
+      "level": "product",
+      "counts": "Public pages show at least 1 of: phone number, physical address, named support email",
+      "where_to_look": [
+        "screen",
+        "text",
+        "billing"
+      ],
+      "inferred_when": "Footer or contact content comes from a CMS not in the repo",
+      "not_applicable_when": "No public pages"
+    },
+    {
+      "id": "permission_requests_before_value",
+      "category": "trust",
+      "type": "count",
+      "level": "product",
+      "counts": "Device or data permission prompts shown before or at first value (notifications, location, contacts, camera, microphone, calendar, bank)",
+      "where_to_look": [
+        "permission",
+        "screen"
+      ],
+      "inferred_when": "Prompt is triggered by a third-party SDK",
+      "not_applicable_when": "No UI"
+    },
+    {
+      "id": "permission_explained",
+      "category": "trust",
+      "type": "bool",
+      "level": "product",
+      "counts": "Every permission prompt before first value is preceded by a plain-language reason on the same screen",
+      "where_to_look": [
+        "permission"
+      ],
+      "inferred_when": "The explanation text is loaded from outside the repo",
+      "not_applicable_when": "permission_requests_before_value = 0"
+    },
+    {
+      "id": "export_present",
+      "category": "data",
+      "type": "bool",
+      "level": "product",
+      "counts": "The user can export their own data (file download or export endpoint) from the product",
+      "where_to_look": [
+        "api",
+        "screen"
+      ],
+      "inferred_when": "Export is only mentioned in docs",
+      "not_applicable_when": "The product stores no user data"
+    },
+    {
+      "id": "api_present",
+      "category": "data",
+      "type": "bool",
+      "level": "product",
+      "counts": "A documented or token-authenticated public API exists for users (not only internal routes used by the UI)",
+      "where_to_look": [
+        "api",
+        "auth",
+        "text"
+      ],
+      "inferred_when": "Routes exist but no user-facing auth for them",
+      "not_applicable_when": "The product is a library"
+    },
+    {
+      "id": "unexplained_jargon_terms",
+      "category": "ux_noise",
+      "type": "count",
+      "level": "step",
+      "counts": "Distinct terms on this screen from the jargon list that are not explained on the same screen. Jargon list: workspace, sync, seat, integration, agent, AI-powered, align, supercharge, pipeline, webhook, SSO, tenant, plus any term in the persona's pain_points",
+      "where_to_look": [
+        "text"
+      ],
+      "inferred_when": "Copy is loaded from a CMS or i18n file not in the repo",
+      "not_applicable_when": "No UI text"
+    },
+    {
+      "id": "adds_notifications",
+      "category": "ux_noise",
+      "type": "bool",
+      "level": "feature",
+      "counts": "The feature sends email, push, or in-app notifications, or adds a badge or inbox",
+      "where_to_look": [
+        "jobs",
+        "screen",
+        "permission"
+      ],
+      "inferred_when": "Sending happens in a job defined outside the repo",
+      "not_applicable_when": "Never; false if none found"
+    },
+    {
+      "id": "team_push_before_value",
+      "category": "ux_noise",
+      "type": "bool",
+      "level": "product",
+      "counts": "The flow asks the user to invite teammates or create a team before first value",
+      "where_to_look": [
+        "screen",
+        "form"
+      ],
+      "inferred_when": "Invite prompt depends on a feature flag",
+      "not_applicable_when": "Single-user product with no team code"
+    },
+    {
+      "id": "ai_label_without_outcome",
+      "category": "ux_noise",
+      "type": "bool",
+      "level": "feature",
+      "counts": "The feature is labelled AI (text or icon) and its label does not state a concrete result for the user",
+      "where_to_look": [
+        "text"
+      ],
+      "inferred_when": "Label text comes from outside the repo",
+      "not_applicable_when": "The feature is not labelled AI"
+    },
+    {
+      "id": "min_body_font_px",
+      "category": "ux_noise",
+      "type": "number",
+      "unit": "px",
+      "level": "product",
+      "counts": "Smallest font size used for body or action text on public and onboarding screens",
+      "where_to_look": [
+        "styles",
+        "screen"
+      ],
+      "inferred_when": "Sizes come from a CSS framework default not visible in the repo",
+      "not_applicable_when": "No UI"
+    },
+    {
+      "id": "low_contrast_text",
+      "category": "ux_noise",
+      "type": "bool",
+      "level": "product",
+      "counts": "Body or action text on public or onboarding screens uses a color under WCAG AA 4.5:1 contrast against its background",
+      "where_to_look": [
+        "styles",
+        "screen"
+      ],
+      "inferred_when": "Background color is not determinable from the repo",
+      "not_applicable_when": "No UI"
+    }
+  ]
+}

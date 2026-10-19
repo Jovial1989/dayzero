@@ -1,7 +1,8 @@
 <!--
-DayZero report template v1.0
+DayZero report template v1.1
 The assistant replaces every [ ] with real values and deletes all HTML comments.
 Do not add, drop, or reorder sections. Empty data = "n/a: <reason>".
+Flow not traceable or not found: Section 1 verdict = that n/a; Sections 2 and 3 = n/a + what was searched + other flows found; Section 4 = n/a.
 -->
 
 # DayZero Report: [Product name]
@@ -10,12 +11,19 @@ Do not add, drop, or reorder sections. Empty data = "n/a: <reason>".
 |---|---|
 | Date | [YYYY-MM-DD] |
 | Repo | [repo folder name] |
+| Stack | [stack_id + signal file, or "unknown (generic guide)"] |
+| App | [path, or "path (auto-picked)", or "path (auto-picked, tie)"] |
+| Flow | [first_value / upgrade / invite / return] |
+| Other apps | [per app: "path (stack_id): @.dayzero validate --app path", or "none"] |
 | Assistant / model | [e.g. Cursor + claude-sonnet-5-5] |
-| Protocol | DayZero System Protocol v1.0 |
-| Personas (N) | [N] ([comma-separated persona ids]) |
+| Protocol | DayZero System Protocol v1.1 |
+| Glossary | [version from measurements.json] |
+| Personas (N) | [N] ([comma-separated persona ids]; mark legacy ones `(legacy)`) |
 | Confidence | [directional / indicative / broad] |
 | Areas scanned | [e.g. app/routes, components, api; sampled: yes/no] |
 | Skipped personas | [ids + reason, or "none"] |
+| Skipped rules | [persona_id:rule_id + reason, or "none"] |
+| Untested rules | [persona_id:rule_id, or "none"] |
 
 > Synthetic respondents. This report is a directional filter, not customer research and not proof of product-market fit.
 
@@ -27,21 +35,21 @@ Do not add, drop, or reorder sections. Empty data = "n/a: <reason>".
 
 - **What the product is, per the code:** [1 statement]
 - **Reached first value:** [k] of [N] personas ([%])
-- **Biggest drop-off:** step [n], [step name]. [k] of [N] personas left here.
+- **Biggest drop-off:** step [n], [step name]. [k] of [N] personas left here. Main rule: `[rule id]`. [If tied: "Tie with steps [x, y]; earliest shown."]
 - **Strongest feature:** [F#, name], [Kano category], Better [0.00]
-- **Weakest feature:** [F#, name], [Kano category], Worse [-0.00]
+- **Weakest feature:** [F#, name], [Kano category], [Worse -0.00, or R n/N if Reverse]
 - **Fix first:** [1 concrete change, tied to a file path]
 - **Stop building:** [feature or "n/a"]
 
 ### Extracted value propositions
 
-| ID | Feature | Value proposition | Evidence | Clicks to reach | Requires |
-|---|---|---|---|---|---|
-| F1 | [name] | [what the user gets] | `[path]` | [n] | [signup / payment / permissions / none] |
-| F2 | [name] | [what the user gets] | `[path]` | [n] | [ ] |
-| F3 | [name] | [what the user gets] | `[path]` | [n] | [ ] |
-| F4 | [name] | [what the user gets] | `[path]` | [n] | [ ] |
-| F5 | [name] | [what the user gets] | `[path]` | [n] | [ ] |
+| ID | Feature | Value proposition | Evidence | Clicks to reach | Requires | Traits |
+|---|---|---|---|---|---|---|
+| F1 | [name] | [what the user gets] | `[path]` | [n] | [signup / payment / permissions / none] | [ai, team, notifications, data, gamification, or none] |
+| F2 | [name] | [what the user gets] | `[path]` | [n] | [ ] | [ ] |
+| F3 | [name] | [what the user gets] | `[path]` | [n] | [ ] | [ ] |
+| F4 | [name] | [what the user gets] | `[path]` | [n] | [ ] | [ ] |
+| F5 | [name] | [what the user gets] | `[path]` | [n] | [ ] | [ ] |
 
 **Claimed but not built:** [features found in docs/comments with no implementing code, or "none"]
 
@@ -51,17 +59,28 @@ Do not add, drop, or reorder sections. Empty data = "n/a: <reason>".
 
 ### Flow as built
 
-| Step | Screen / route | Evidence | Clicks | Fields | Friction |
+| Step | Screen / route | Role | Evidence | Friction |
+|---|---|---|---|---|
+| 1 | [name] | [landing] | `[path]` | [paywall / permission / empty state / dead end / none] |
+| 2 | [name] | [signup] | `[path]` | [ ] |
+| 3 | [name] | [ ] | `[path]` | [ ] |
+| 4 | [name] | [ ] | `[path]` | [ ] |
+| [n] | [first value] | first_value | `[path]` | [ ] |
+
+### Measurement sheet
+
+<!-- 1 row per glossary measurement per level target. Product-level measurements: 1 row each. -->
+
+| Measurement | Level | Step / feature | Value | Status | Evidence |
 |---|---|---|---|---|---|
-| 1 | [name] | `[path]` | [n] | [n] | [paywall / permission / empty state / none] |
-| 2 | [name] | `[path]` | [n] | [n] | [ ] |
-| 3 | [name] | `[path]` | [n] | [n] | [ ] |
-| 4 | [name] | `[path]` | [n] | [n] | [ ] |
-| [n] | [first value] | `[path]` | [n] | [n] | [ ] |
+| [clicks_to_value] | step | [step n] | [n] | [measured / inferred / not_applicable] | `[path]` |
+| [form_fields] | step | [step n] | [n] | [ ] | `[path]` |
+| [oauth_present] | product | product | [true / false] | [ ] | `[path]` |
+| [ ] | [ ] | [ ] | [ ] | [ ] | `[ ]` |
 
 ### Survival
 
-| Step | Personas still in | Survival | Dropped here |
+| Step | Entered step | Survival | Dropped here |
 |---|---|---|---|
 | 1 | [k] / [N] | [100%] | [ids or "none"] |
 | 2 | [k] / [N] | [%] | [ ] |
@@ -71,10 +90,10 @@ Do not add, drop, or reorder sections. Empty data = "n/a: <reason>".
 
 ### Why they left
 
-| Persona | Dropped at | Rule that fired | Evidence | In their words |
-|---|---|---|---|---|
-| [name] (`[id]`) | step [n] | [inference_rule / secondary rule / deal breaker] | `[path]` | "[quote]" |
-| [name] (`[id]`) | [step n / reached first value] | [ ] | `[path]` | "[quote]" |
+| Persona | Dropped at | Rule id | Measurement | Threshold | Measured | Evidence | In their words |
+|---|---|---|---|---|---|---|---|
+| [name] (`[id]`) | step [n] | `[rule id / legacy / dead_end]` | [measurement] | [comparison + threshold] | [value / unmeasured] | `[path]` | "[quote]" |
+| [name] (`[id]`) | [step n / reached first value] | `[ ]` | [ ] | [ ] | [ ] | `[path]` | "[quote]" |
 
 ---
 
@@ -103,11 +122,18 @@ Do not add, drop, or reorder sections. Empty data = "n/a: <reason>".
 
 ### Raw answers
 
-| Persona | Feature | Functional | Dysfunctional | Code | Reason (≤15 words) |
-|---|---|---|---|---|---|
-| [id] | F1 | [Like/Expect/Neutral/Tolerate/Dislike] | [ ] | [M/P/A/I/R/Q] | [reason] |
-| [id] | F2 | [ ] | [ ] | [ ] | [ ] |
-| [ ] | [ ] | [ ] | [ ] | [ ] | [ ] |
+| Persona | Feature | Functional | Dysfunctional | Code | Rule | Reason (≤15 words) |
+|---|---|---|---|---|---|---|
+| [id] | F1 | [Like/Expect/Neutral/Tolerate/Dislike] | [ ] | [M/P/A/I/R/Q] | `[rule id or none]` | [reason] |
+| [id] | F2 | [ ] | [ ] | [ ] | `[ ]` | [ ] |
+| [ ] | [ ] | [ ] | [ ] | [ ] | `[ ]` | [ ] |
+
+### Rules fired
+
+| Persona | Rule id | Effect | Scope | Measured vs threshold | State | Source type |
+|---|---|---|---|---|---|---|
+| [id] | `[rule id]` | [drop / kano_force / kano_cap / flag] | [step role / feature trait / global] | [4 > 3] | [applied / overridden / flag only] | [public / own / heuristic / legacy] |
+| [ ] | `[ ]` | [ ] | [ ] | [ ] | [ ] | [ ] |
 
 ---
 
@@ -124,4 +150,4 @@ Do not add, drop, or reorder sections. Empty data = "n/a: <reason>".
 
 ---
 
-<sub>Generated locally by DayZero. Code was read by your assistant only. [N] synthetic personas, confidence: [label]. Run real interviews before betting on these numbers.</sub>
+<sub>Generated locally by DayZero. Code was read by your assistant only. [N] synthetic personas, confidence: [label]. [k] of [m] fired rules have a heuristic source. Run real interviews before betting on these numbers.</sub>
