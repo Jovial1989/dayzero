@@ -159,9 +159,15 @@ Pricing is on request. Open an issue with the **Pro license request** template.
 | Next.js and React web | `app/layout.tsx`, `pages/_app.tsx`, or `createRoot(` |
 | Flutter | `lib/main.dart` with `runApp(` |
 | iOS SwiftUI | a `@main` type conforming to `App` |
+| React Native and Expo | `expo` + `react-native` in `package.json`, `app.json` with an `expo` key |
+| Native Android | `AndroidManifest.xml` launcher activity + an `Activity` class |
+| Vue and Nuxt | `nuxt.config.ts`, or `createApp(` with a `.vue` root |
+| SvelteKit | `svelte.config.js` + `src/routes/+page.svelte` |
 | CLI tools and backend APIs | `bin` in `package.json`, `[project.scripts]`, Go `main` with cobra, or a server entry |
 
-We tested each one on its own fixture app. In those runs DayZero picked the right stack every time, cited a real file for every flow step, and inferred at most 10% of its measurements.
+Detection order lives in [`detect.json`](.dayzero/stacks/detect.json). When an app has its own server folder, the CLI and API guide loads next to the main guide, and the report header names which guide read what.
+
+We tested each one on its own fixture app. In those runs DayZero picked the right stack every time, cited a real file for every flow step, and inferred at most 11% of its measurements.
 
 Any other stack runs on a generic guide, and the report says `Stack: unknown` up front. In a monorepo, DayZero picks the app with the most screen, navigation, and form files and lists the others with a ready `--app` command. If a flow is missing or only half-built (for example a checkout that never marks the user as paid), the report says so instead of inventing the missing steps.
 

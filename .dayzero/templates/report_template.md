@@ -1,5 +1,5 @@
 <!--
-DayZero report template v1.1
+DayZero report template v1.2
 The assistant replaces every [ ] with real values and deletes all HTML comments.
 Do not add, drop, or reorder sections. Empty data = "n/a: <reason>".
 Flow not traceable or not found: Section 1 verdict = that n/a; Sections 2 and 3 = n/a + what was searched + other flows found; Section 4 = n/a.
@@ -12,11 +12,12 @@ Flow not traceable or not found: Section 1 verdict = that n/a; Sections 2 and 3 
 | Date | [YYYY-MM-DD] |
 | Repo | [repo folder name] |
 | Stack | [stack_id + signal file, or "unknown (generic guide)"] |
+| Guides | [each loaded guide with role and concepts owned, e.g. "electron (primary): permission, jobs, auth, billing · nextjs-react (ui): screen, navigation, form, text, styles"; left-out guide if any] |
 | App | [path, or "path (auto-picked)", or "path (auto-picked, tie)"] |
 | Flow | [first_value / upgrade / invite / return] |
 | Other apps | [per app: "path (stack_id): @.dayzero validate --app path", or "none"] |
 | Assistant / model | [e.g. Cursor + claude-sonnet-5-5] |
-| Protocol | DayZero System Protocol v1.1 |
+| Protocol | DayZero System Protocol v1.2 |
 | Glossary | [version from measurements.json] |
 | Answer list | [version from kano_answers.json] |
 | Personas (N) | [N] ([comma-separated persona ids]; mark legacy ones `(legacy)`) |

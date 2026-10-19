@@ -1,0 +1,120 @@
+{
+  "version": "1.0",
+  "stacks": [
+    {
+      "id": "flutter",
+      "order": 1,
+      "family": "mobile",
+      "strong": [
+        "lib/main.dart containing runApp("
+      ],
+      "weak": [
+        "pubspec.yaml with a flutter: section"
+      ]
+    },
+    {
+      "id": "react-native-expo",
+      "order": 2,
+      "family": "mobile",
+      "beats": [
+        "nextjs-react"
+      ],
+      "strong": [
+        "package.json dependency expo or react-native",
+        "app.json or app.config.(js|ts) with an expo key",
+        "index.js calling AppRegistry.registerComponent("
+      ],
+      "weak": [
+        "android/ and ios/ folders next to a package.json"
+      ],
+      "notes": "Bare React Native (no expo) uses this guide too, noted as bare"
+    },
+    {
+      "id": "android",
+      "order": 3,
+      "family": "mobile",
+      "strong": [
+        "AndroidManifest.xml with an <activity> and a Kotlin or Java class extending Activity, ComponentActivity or AppCompatActivity"
+      ],
+      "weak": [
+        "build.gradle(.kts) applying com.android.application"
+      ],
+      "notes": "Compose or XML views. Kotlin Multiplatform: Android side only, noted"
+    },
+    {
+      "id": "ios-swiftui",
+      "order": 4,
+      "family": "mobile",
+      "strong": [
+        "a .swift file with @main on a type conforming to App"
+      ],
+      "weak": [
+        "*.xcodeproj or Package.swift with an iOS platform"
+      ]
+    },
+    {
+      "id": "vue-nuxt",
+      "order": 5,
+      "family": "web",
+      "strong": [
+        "nuxt.config.(ts|js)",
+        "src/main.(ts|js) calling createApp( with a .vue root component"
+      ],
+      "weak": [
+        "package.json dependency nuxt or vue"
+      ],
+      "hybrid_role": "ui"
+    },
+    {
+      "id": "sveltekit",
+      "order": 6,
+      "family": "web",
+      "strong": [
+        "svelte.config.js with @sveltejs/kit",
+        "src/routes/+page.svelte"
+      ],
+      "weak": [
+        "package.json dependency svelte"
+      ],
+      "hybrid_role": "ui"
+    },
+    {
+      "id": "nextjs-react",
+      "order": 7,
+      "family": "web",
+      "strong": [
+        "app/layout.(tsx|jsx)",
+        "pages/_app.(tsx|jsx)",
+        "src/main.(tsx|jsx) calling createRoot("
+      ],
+      "weak": [
+        "package.json dependency next or react-dom"
+      ],
+      "hybrid_role": "ui"
+    },
+    {
+      "id": "cli-api",
+      "order": 11,
+      "family": "api",
+      "strong": [
+        "bin in package.json",
+        "[project.scripts] in pyproject.toml",
+        "Go func main() using cobra or flag",
+        "a server entry (app.listen(, FastAPI(, http.ListenAndServe() with no UI folder"
+      ],
+      "weak": [
+        "package.json, pyproject.toml or go.mod alone"
+      ],
+      "hybrid_role": "api"
+    },
+    {
+      "id": "unknown",
+      "order": 99,
+      "family": "fallback",
+      "strong": [],
+      "weak": [
+        "any other manifest"
+      ]
+    }
+  ]
+}

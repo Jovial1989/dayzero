@@ -81,6 +81,28 @@ def main():
         if found != STACK_SECTIONS:
             fail(rel, f"sections must be '## 1.' to '## 12.' in order, found {found}")
 
+    stacks_dir = dz / "stacks"
+    detect = check_schema(stacks_dir / "detect.json", stacks_dir / "detect.schema.json", root)
+    if isinstance(detect, dict):
+        rel = (stacks_dir / "detect.json").relative_to(root)
+        entries = [s for s in detect.get("stacks", []) if isinstance(s, dict)]
+        ids = [s.get("id") for s in entries]
+        orders = [s.get("order") for s in entries]
+        for dup in sorted({o for o in orders if orders.count(o) > 1}, key=str):
+            fail(rel, f"duplicate order {dup}")
+        for dup in sorted({i for i in ids if ids.count(i) > 1}, key=str):
+            fail(rel, f"duplicate id '{dup}'")
+        for s in entries:
+            for ref in list(s.get("beats") or []) + ([s["falls_through_to"]] if s.get("falls_through_to") else []):
+                if ref not in ids:
+                    fail(rel, f"'{s.get('id')}' references unknown stack id '{ref}'")
+            sid = s.get("id")
+            if sid and sid != "unknown" and not (stacks_dir / f"{sid}.md").exists():
+                fail(rel, f"stack id '{sid}' has no guide .dayzero/stacks/{sid}.md")
+        for path in sorted(stacks_dir.glob("*.md")):
+            if path.name != "_generic.md" and path.stem not in ids:
+                fail(path.relative_to(root), "guide has no entry in .dayzero/stacks/detect.json")
+
     md_files = sorted(dz.rglob("*.md")) + [root / "README.md"]
     for path in md_files:
         if not path.exists():

@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "dayzero/detect.schema.json",
+  "title": "DayZero stack detection table",
+  "type": "object",
+  "required": ["version", "stacks"],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+$" },
+    "stacks": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": ["id", "order", "family", "strong", "weak"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9-]+$|^unknown$" },
+          "order": { "type": "integer", "minimum": 1 },
+          "family": { "enum": ["mobile", "desktop", "extension", "web", "server", "api", "fallback"] },
+          "strong": { "type": "array", "items": { "type": "string", "minLength": 3 } },
+          "weak": { "type": "array", "items": { "type": "string", "minLength": 3 } },
+          "beats": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+          "falls_through_to": { "type": "string", "description": "Stack id used when strong signals exist but the app has no UI of that kind" },
+          "hybrid_role": { "enum": ["shell", "server", "ui", "api"] },
+          "notes": { "type": "string" }
+        }
+      }
+    }
+  }
+}

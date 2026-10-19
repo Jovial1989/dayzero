@@ -1,5 +1,21 @@
 # Changelog
 
+## Protocol v1.2 (unreleased)
+
+### Added
+
+- 4 stack guides: `react-native-expo`, `android` (Compose and XML views), `vue-nuxt` (Nuxt 3 and Vue 3 SPAs), `sveltekit`.
+- `.dayzero/stacks/detect.json` + `detect.schema.json`: 1 ordered detection table for every stack. Each entry lists strong and weak signals, which stacks it beats, and what it falls through to.
+- Hybrid repos: up to 3 guides load for `desktop_shell`, `server_js_ui` and `server_folder` patterns. A fixed ownership table says which guide owns each of the 10 concepts; a concept that would need a 4th guide is marked `inferred`.
+- Report header: Guides row (each loaded guide, its role, the concepts it owns).
+- CI: the validator checks `detect.json` against its schema, rejects duplicate order or id and dangling `beats` / `falls_through_to`, and requires a guide for every stack id and a stack id for every guide.
+
+### Changed
+
+- Step 0 runs detection from `detect.json` (by order, strong signals before weak) instead of the precedence table in `_generic.md`.
+- Step 1c resolves each concept through its owner guide.
+- Expo apps are no longer detected as `nextjs-react`; native Android apps are no longer `unknown`.
+
 ## Protocol v1.1 (unreleased)
 
 ### Added

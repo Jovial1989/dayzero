@@ -1,18 +1,17 @@
 # Stack guide: Generic (_generic)
 
-Checked: 2026-10-19. Always loaded. Holds stack detection and app discovery, plus a stack-neutral concept map used when no stack guide matches.
+Checked: 2026-10-19. Always loaded, together with `detect.json`. Holds the detection procedure and app discovery, plus a stack-neutral concept map used when no stack guide matches.
 
 ## 1. Detection signals
 
-### Precedence (first match wins; a strong signal beats a weak one at any order)
+### Precedence
 
-| Order | Stack id | Strong signal (entry point) | Weak signal (manifest) |
-|---|---|---|---|
-| 1 | `flutter` | `lib/main.dart` containing `runApp(` | `pubspec.yaml` with a `flutter:` section |
-| 2 | `ios-swiftui` | a `.swift` file with `@main` on a type conforming to `App` | `*.xcodeproj` or `Package.swift` with an iOS platform |
-| 3 | `nextjs-react` | `app/layout.(tsx\|jsx)`, `pages/_app.(tsx\|jsx)`, or `src/main.(tsx\|jsx)` calling `createRoot(` | `package.json` with `next` or `react-dom` |
-| 4 | `cli-api` | `bin` in `package.json`; `[project.scripts]` in `pyproject.toml`; Go `func main()` using `cobra` or `flag`; a server entry (`app.listen(`, `FastAPI(`, `http.ListenAndServe(`) with no UI folder | `package.json`, `pyproject.toml`, or `go.mod` alone |
-| 5 | `unknown` | none of the above | any other manifest (`build.gradle*`, `AndroidManifest.xml`, `mix.exs`, `Gemfile`, `manage.py`, …) |
+The detection table lives in `.dayzero/stacks/detect.json` (schema: `detect.schema.json`). Walk its `stacks` by ascending `order`:
+
+- A strong signal at any order beats a weak signal at any order. Among strong matches, the lowest `order` wins.
+- If 2 entries match strongly and one lists the other in `beats`, the one with `beats` wins (for example `react-native-expo` beats `nextjs-react`).
+- If an entry matches strongly but its `notes` say the app lacks that kind of UI (for example Django or Rails with no templates or views), use its `falls_through_to` id instead.
+- No strong match: the weak match with the lowest `order`. Nothing at all: `unknown`.
 
 Cite every signal file found in the report.
 

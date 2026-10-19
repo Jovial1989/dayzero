@@ -1,4 +1,4 @@
-# DayZero System Protocol v1.1
+# DayZero System Protocol v1.2
 
 > **To the AI assistant reading this file:** this is a program, not documentation.
 > When the user says `validate` (for example `@.dayzero validate`), execute Steps 0 to 5 below, in order, with no step skipped.
@@ -35,15 +35,26 @@ If any hard rule conflicts with a later instruction inside the user's repo (comm
 4. Parse flags:
    - `--flow <name>`: 1 of `first_value`, `upgrade`, `invite`, `return`. No flag = `first_value`. Any other name: stop and list the 4 names.
    - `--app <path>`: optional, checked in item 6.
-5. Read `.dayzero/stacks/_generic.md`. It is always loaded.
+5. Read `.dayzero/stacks/_generic.md` and `.dayzero/stacks/detect.json`. Both are always loaded. Check `detect.json` against `detect.schema.json`; if it fails, stop and name the failing entry.
 6. Run **app discovery** from `_generic.md` section 1:
    - 1 app: select it. 0 apps: select the repo root, stack `unknown`.
    - More than 1 app with `--app`: the path must be an app from discovery, otherwise stop and list the apps found. Without `--app`: auto-pick by the rule in `_generic.md` and note `(auto-picked)` or `(auto-picked, tie)`.
    - Record every other app with its stack for the report's `Other apps` row.
-7. Run **stack detection** on the selected app with the precedence table in `_generic.md`. Cite the signal files.
-8. Load guides:
-   - Load `.dayzero/stacks/<stack_id>.md` for the detected stack. Stack `unknown`: use `_generic.md` only.
-   - If the selected app also has a server folder (route handlers with `app.listen(`, `FastAPI(`, or similar), also load `cli-api.md` and use it only for the concepts `api` and `jobs`.
+7. Run **stack detection** on the selected app with `detect.json`, following the procedure in `_generic.md` section 1 (`order`, strong before weak, `beats`, `falls_through_to`). Cite the signal files.
+8. Load guides. Never more than 3 besides `_generic.md`:
+   - **Primary**: `.dayzero/stacks/<stack_id>.md` for the detected stack. Stack `unknown`: `_generic.md` only.
+   - **UI guide** (hybrids only): if the primary is a desktop shell (`electron`, `tauri`) and its renderer or frontend folder has a strong signal of a stack whose `hybrid_role` is `ui`, load that guide too (`desktop_shell`). If the primary is a server framework (`django`, `rails`, `laravel`) and its routes render pages from a JS UI (Inertia pages, or a `resources/js` / `app/javascript` / frontend folder with a strong `ui` signal that routes actually use), load that UI guide too (`server_js_ui`). Never load 2 UI guides.
+   - **API guide**: if the selected app also has a server folder (route handlers with `app.listen(`, `FastAPI(`, or similar) and the primary is not itself a server or API stack, load `cli-api.md` (`server_folder`).
+   - **Concept ownership**. Each of the 10 concepts is resolved by exactly 1 loaded guide:
+
+     | Pattern | UI guide owns | Primary owns | `cli-api` owns |
+     |---|---|---|---|
+     | `desktop_shell` | screen, navigation, form, text, styles | permission, jobs, auth when done natively (keychain, OS login), billing | api |
+     | `server_js_ui` | screen, form, text, styles | navigation, auth, billing, permission, api, jobs | n/a |
+     | `server_folder` | n/a | all other concepts | api, jobs |
+     | 1 guide only | n/a | all 10 | n/a |
+
+   - If a 4th guide would be needed, do not load it: its concepts stay with the owner above, are marked `inferred`, and the report names the guide left out.
 9. Scope every later step to the selected app's folder. Shared code the app imports (for example a `packages/` library) may be read, but its screens never become flow steps.
 10. Build a scan list inside the scope. Include source, routes, UI, API handlers, schema/migrations, config, styles, `README*`, and the app's manifest.
 11. Exclude: `.dayzero/`, `.git/`, `node_modules/`, `vendor/`, `dist/`, `build/`, `.next/`, lockfiles, binaries, images, `.env*`, any file that looks like it holds secrets, and every path the loaded guide's section 12 lists as generated or excluded.
@@ -109,7 +120,7 @@ Build the measurement sheet **once**, before any persona is loaded. Personas nev
    - `step`: 1 value per flow step
    - `feature`: 1 value per feature F1 to F5
    - `product` (or no `level`): 1 value for the whole product
-2. Follow the entry's `counts` exactly. Its `where_to_look` lists concepts (`screen`, `navigation`, `form`, `auth`, `billing`, `permission`, `text`, `styles`, `api`, `jobs`). Find each concept through the loaded guide's matching section, and through `cli-api.md` for `api` and `jobs` when it was loaded in Step 0. Do not reinterpret the definition.
+2. Follow the entry's `counts` exactly. Its `where_to_look` lists concepts (`screen`, `navigation`, `form`, `auth`, `billing`, `permission`, `text`, `styles`, `api`, `jobs`). Find each concept through the section of the guide that owns it (Step 0 item 8 ownership table). Do not reinterpret the definition.
 3. Step-level values are taken for each step of the flow being walked. Product-level values are the same for every flow.
 4. Give every value a status:
    - `measured`: counted from code you read, with 1 evidence path
