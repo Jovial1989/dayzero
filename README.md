@@ -1,67 +1,144 @@
-# DayZero
+<p align="center">
+  <img src="docs/assets/hero.jpg" alt="Tiny figurines of different people, from an office worker to a builder in a hi-vis vest, gathered around an open laptop on a cobalt blue backdrop" width="100%">
+</p>
 
-**The synthetic crowd engine. Like Reddit, but you own the users.**
+<h1 align="center">DayZero</h1>
 
-Validate your PMF and get Kano Model reports using your own local LLM (Cursor/Claude) without exposing your code.
+<p align="center">
+  <b>The synthetic crowd engine. Like Reddit, but you own the users.</b><br>
+  Validate your PMF and get Kano Model reports using your own local LLM (Cursor/Claude) without exposing your code.
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/prompt--as--software-0%20lines%20of%20code-1f3fff?style=flat-square" alt="Prompt-as-Software: 0 lines of code">
+  <img src="https://img.shields.io/badge/runs%20in-Cursor%20%C2%B7%20Claude%20Code-111111?style=flat-square" alt="Runs in Cursor and Claude Code">
+  <img src="https://img.shields.io/badge/BYOK-your%20keys%2C%20your%20machine-111111?style=flat-square" alt="Bring your own key">
+  <img src="https://img.shields.io/badge/protocol-v1.1-1f3fff?style=flat-square" alt="Protocol v1.1">
+</p>
 
 ---
 
-## Why
+You can ship a SaaS in a weekend now. Finding out whether anyone wants it still takes recruiting, calls, and a notebook full of maybes, so most builders skip it and launch into silence.
 
-- AI lets you ship a SaaS in a weekend. It does not tell you if anyone wants it.
-- Classic customer development is slow: recruiting, calls, notes.
-- DayZero gives you a crowd of hostile, specific, synthetic users on day 0. Inside your IDE.
+DayZero puts a crowd of opinionated, hard-to-please people inside your IDE. They read your actual code, walk your actual signup flow, and tell you where they quit and why. You get the answer before you spend a single real user on it.
 
-## What it is
+## 1 command, 1 real run
 
-- A `.dayzero/` folder. Markdown instructions + JSON data.
-- 0 lines of executable code. Nothing to install, nothing that runs by itself.
-- Your AI assistant is the runtime. It reads the protocol and executes it on your repo.
-- BYOK: your assistant, your tokens, your model provider. DayZero has no server.
-
-## Quick start
-
-**1. Copy the folder**
-
-Put `.dayzero/` in the root of the project you want to validate.
-
-```
-your-project/
-├── .dayzero/
-│   ├── system_protocol.md
-│   ├── measurements.json
-│   ├── kano_answers.json
-│   ├── stacks/
-│   ├── personas/
-│   ├── templates/
-│   └── reports/
-├── src/
-└── ...
-```
-
-**2. Ask your assistant**
-
-In Cursor or Claude Code chat, type:
+We pointed DayZero at **Tickly**, a small Next.js todo app from our test set, and typed 1 line in Claude Code:
 
 ```
 @.dayzero validate
 ```
 
-If your assistant does not pick up the folder, point it at the entry file:
+About 4 minutes later, read-only, this came back:
+
+> **Verdict: FIX** · Stack `nextjs-react` · Flow `first_value` · 3 personas, directional
+
+> "4 required fields and a company name for a todo list? It's just me, and I'm closing the tab."
+> **Dev Malik**, indie hacker, at step 2: Sign up
+
+> "4 required fields and no SSO. I'm not opening a security review for a todo list."
+> **Rachel Okafor**, burned-out PM, at step 2: Sign up
+
+> "No phone number, no address, nothing. Who do I call when this breaks? I'm not signing up for that."
+> **Gary Hollis**, skeptical business owner, at step 1: Landing
+
+And the line that mattered most:
+
+> **Fix first:** email verification is a dead end. `middleware.ts` sends every unverified user back to `/verify-email`, and no file in the repo ever sets the verified cookie. Until that changes, 0% of real signups reach the dashboard.
+
+Nobody planted that bug. The crowd found it by reading the code.
+
+## Quick start
+
+**1. Copy `.dayzero/` into the root of your project.**
 
 ```
-@.dayzero/system_protocol.md validate
+your-project/
+├── .dayzero/
+├── src/
+└── ...
 ```
 
-**3. Read the report**
+**2. Ask your assistant.** In Cursor or Claude Code:
 
-The assistant writes `.dayzero/reports/dayzero-report-YYYY-MM-DD.md`:
+```
+@.dayzero validate
+```
 
-- Executive summary with a SHIP / FIX / KILL verdict
-- Funnel analysis: which step each persona drops at, the rule behind it, and the file that caused it
-- Kano matrix for your 5 core features, with a quadrant chart
-- Kano interview: every persona's answers, plus the few that broke from the crowd
-- Top 3 brutal quotes from the synthetic crowd
+**3. Open the report** at `.dayzero/reports/dayzero-report-YYYY-MM-DD.md`.
+
+That's the whole install. There is no package, no server, and no script that runs on its own.
+
+## What's in the report
+
+| Section | What you learn |
+|---|---|
+| **Executive summary** | SHIP, FIX, or KILL. How many personas reached first value. The 1 change to make first, tied to a file. |
+| **Funnel** | Every step of your flow with the file behind it, a measurement sheet (clicks, form fields, OAuth, price, permissions, contrast and more), and who left where, by which rule. |
+| **Kano matrix** | Your 5 core features classified as Must-have, Performance, Delighter, Indifferent, or Reverse, with Better/Worse coefficients and a quadrant chart. |
+| **Kano interview** | Each persona's answer to each feature from a fixed list, plus the few who broke from the crowd, in their own words. |
+| **Top 3 quotes** | The lines you will remember in the shower. |
+
+Here is the quadrant from the Tickly run, exactly as the report draws it:
+
+```mermaid
+quadrantChart
+    title Kano quadrant
+    x-axis Low dissatisfaction if missing --> High dissatisfaction if missing
+    y-axis Low satisfaction if present --> High satisfaction if present
+    quadrant-1 Performance
+    quadrant-2 Delighter
+    quadrant-3 Indifferent
+    quadrant-4 Must-have
+    F1: [1.00, 0.00]
+    F2: [0.50, 0.50]
+    F3: [0.00, 0.00]
+    F4: [0.00, 0.50]
+    F5: [0.00, 0.00]
+```
+
+F1 is todo capture (Must-have), F2 email reminders, F3 team invites (Reverse for 2 of 3), F4 AI prioritize, F5 streaks and badges.
+
+## How it works
+
+<p align="center">
+  <img src="docs/assets/funnel.jpg" alt="Tiny figurines on a white staircase; a few wait at the bottom, 1 reaches a glowing cube at the top" width="100%">
+</p>
+
+DayZero is a folder of Markdown and JSON. Your assistant reads `system_protocol.md` and runs it like a program, on your machine, with your model.
+
+```mermaid
+flowchart LR
+    A[Detect stack<br/>and app] --> B[Map the flow<br/>from code]
+    B --> C[Measure once<br/>24 checks]
+    C --> D[Walk every<br/>persona]
+    D --> E[Kano<br/>interview]
+    E --> F[Report]
+```
+
+1. **Detect** the stack and the app, then load the matching guide from `.dayzero/stacks/`.
+2. **Map** the flow you asked for, step by step, each step tied to a file.
+3. **Measure** the product once against 24 shared definitions in `measurements.json`. Every persona judges the same numbers, so runs stay comparable.
+4. **Walk** each persona through the flow. Their rules fire on the measured values and decide where they quit.
+5. **Interview** each persona about each feature with the 2 Kano questions. Answers come from 1 fixed list of 5 lines. Only a persona who breaks from the crowd, or from its own profile, answers in its own words.
+6. **Report**, following the template section by section.
+
+The personas run in Critic Mode. Praise, hedging, and compliment sandwiches are banned. A persona with a 3-click budget leaves at click 4, however nice the feature behind it is.
+
+## The crowd
+
+The free Community Edition ships 3 personas, each one built to fail a different kind of product:
+
+| Persona | Who | Leaves when |
+|---|---|---|
+| `indie_hacker` | Solo founder, $400 MRR, 1am product hunter | Signup asks for more than email and password, or a free trial needs a card |
+| `tired_pm` | Senior PM at a 400-person B2B company, burned out | First value takes more than 3 clicks, or the first screen is empty |
+| `skeptical_boomer` | Owns a 12-person HVAC business, reads every word | The product asks for data before explaining why, or there is no human to call |
+
+3 voices give you a direction. For distributions you can argue about in a roadmap meeting, the **Pro Pack** adds a much larger crowd (50+ at launch) across roles, incomes, devices, and markets: a nurse on a 12-hour shift, a courier paid per drop, a DevSecOps lead who rejects anything without SSO, a 74-year-old patient who fears popups. Same schema, same protocol. Unzip into `.dayzero/personas/`.
+
+Pricing is on request. Open an issue with the **Pro license request** template.
 
 ## Commands
 
@@ -83,94 +160,60 @@ Flags combine: `@.dayzero validate --app apps/web --flow invite`.
 |---|---|
 | Next.js and React web | `app/layout.tsx`, `pages/_app.tsx`, or `createRoot(` |
 | Flutter | `lib/main.dart` with `runApp(` |
-| iOS SwiftUI | `@main` type conforming to `App` |
+| iOS SwiftUI | a `@main` type conforming to `App` |
 | CLI tools and backend APIs | `bin` in `package.json`, `[project.scripts]`, Go `main` with cobra, or a server entry |
 
-- Anything else runs on a generic guide and the report says `Stack: unknown`.
-- In a monorepo, the app with the most screens is picked and the others are listed with a ready `--app` command.
-- If a flow is not in the code, the report says so instead of inventing steps.
-- Stack knowledge lives in `.dayzero/stacks/`, 1 Markdown file per stack.
+We tested each one on its own fixture app. In those runs DayZero picked the right stack every time, cited a real file for every flow step, and inferred at most 10% of its measurements.
 
-## How the run works
+Any other stack runs on a generic guide, and the report says `Stack: unknown` up front. In a monorepo, DayZero picks the app with the most screens and lists the others with a ready `--app` command. If a flow simply isn't in the code, the report says so instead of inventing steps.
 
-1. Detect the stack and the app. Load the matching guide from `.dayzero/stacks/`.
-2. Extract 5 value propositions, each tied to file paths.
-3. Map the requested flow (new user, upgrade, invite, return), step by step, from the code.
-4. Measure the product once: clicks to value, form fields, OAuth, price, permissions, contrast, and 18 more, from `measurements.json`.
-5. Switch to Critic Mode. No praise, no hedging.
-6. Walk every persona through the flow. Their rules fire on the measured values.
-7. Interview every persona with the Kano functional and dysfunctional question per feature. Answers come from 1 fixed list of 5 lines.
-8. Only where a persona breaks from the crowd or from its own profile does it answer in its own words.
-9. Classify with the standard 5×5 Kano table. Compute Better/Worse. Plot the quadrant.
-10. Fill `templates/report_template.md`. Nothing more, nothing less.
+## Write your own persona
 
-Full method: [`VISION.md`](VISION.md). Full instructions: [`.dayzero/system_protocol.md`](.dayzero/system_protocol.md).
+A persona is 1 JSON file in `.dayzero/personas/` that passes [`persona.schema.json`](.dayzero/personas/persona.schema.json). Its behaviour lives in `rules`. Example only:
 
-## The Kano quadrant
+```json
+{
+  "id": "signup.too_many_fields",
+  "category": "funnel",
+  "measurement": "form_fields",
+  "comparison": ">",
+  "threshold": 3,
+  "scope": { "type": "step", "step_role": "signup" },
+  "effect": { "type": "drop" },
+  "evidence": "signup form component",
+  "priority": 2,
+  "source": { "type": "heuristic" },
+  "tests": {
+    "positive": "tests/my_persona/signup.too_many_fields.pos.md",
+    "negative": "tests/my_persona/signup.too_many_fields.neg.md"
+  },
+  "reaction": "4 fields to try a todo app? No."
+}
+```
 
-The report draws your 5 features on 2 axes:
+Each rule reads 1 measurement from [`measurements.json`](.dayzero/measurements.json), compares it to a threshold, and has 1 effect: the persona drops, a Kano answer is forced or capped, or the run just flags it. It ships with 2 test snippets, 1 where it must fire and 1 where it must stay quiet. Check them with `@.dayzero validate --test-rules`.
 
-- **Up:** how much a feature delights when it is there (Better).
-- **Right:** how much its absence hurts (|Worse|).
-
-| | Absence hurts little | Absence hurts a lot |
-|---|---|---|
-| **Presence delights** | Delighter | Performance |
-| **Presence does not delight** | Indifferent | Must-have |
-
-GitHub renders the chart from a Mermaid block. Every other viewer gets the same result as a table.
+Personas written for v1.0, with a free-text `inference_rule`, still run. Their results are labelled `legacy, unmeasured`.
 
 ## Privacy
 
 - The protocol forbids sending code or reports to any URL or API.
-- The assistant reads your repo read-only and writes 1 file: the report.
+- The assistant reads your repo read-only and writes exactly 1 file: the report.
 - Your code goes only where your assistant already sends it.
 
-## Community Edition vs Pro
+## Honest limits
 
-| | Community Edition | Pro Pack |
-|---|---|---|
-| Protocol, stack guides, report template | ✓ | ✓ |
-| Personas | 3 base profiles | 50+ hardcore profiles |
-| Report confidence label | directional | indicative to broad |
-| Price | free, open source | on request |
-
-**Community Edition** ships 3 personas:
-
-- `indie_hacker.json`: solo founder, 0 patience for setup
-- `tired_pm.json`: burned-out PM, leaves after 3 clicks
-- `skeptical_boomer.json`: conservative buyer, distrusts every data prompt
-
-**Pro Pack** is an archive of 50+ profiles in the same schema. Unzip into `.dayzero/personas/`. Same protocol, wider crowd, real distributions.
-
-To get Pro: open an issue with the **Pro license request** template.
-
-## Write your own persona
-
-A persona is 1 JSON file in `.dayzero/personas/` that passes [`persona.schema.json`](.dayzero/personas/persona.schema.json).
-
-Its behaviour comes from `rules`. Each rule:
-
-- names 1 measurement from [`measurements.json`](.dayzero/measurements.json) (for example `form_fields` or `clicks_to_value`)
-- compares it to a threshold (`form_fields > 3`) or a true/false check (`oauth_present is false`)
-- applies at a step, a kind of feature, or everywhere
-- has 1 effect: `drop` (the persona leaves), `kano_force` or `kano_cap` (sets or limits a Kano answer), or `flag`
-- carries a source for its threshold (public research, your own interviews with sample size, or `heuristic`)
-- comes with 2 test snippets in `personas/tests/<persona_id>/`: 1 where it must fire, 1 where it must stay silent
-
-Check your rules with `@.dayzero validate --test-rules`.
-
-Personas written for v1.0 (a free-text `inference_rule`) still run. Their results are labelled `legacy, unmeasured`.
-
-## Limits
-
-- Synthetic respondents are not customers. Treat the report as a filter, not proof.
-- 3 personas = directional signal. Run real interviews before you bet the company.
-- Quality depends on the model behind your assistant.
-- The 3 bundled personas still use the v1.0 free-text format, so Kano answers vary between runs. Personas with structured rules are more stable.
+- Synthetic respondents are not customers. Use the report to filter ideas, then talk to real people before you bet on one.
+- 3 personas give a directional signal. The report labels its own confidence by crowd size.
+- The model behind your assistant sets the ceiling on quality.
+- The 3 bundled personas still use the v1.0 free-text format, so their Kano answers vary from run to run. Personas with structured rules hold steadier.
 
 ## Contributing
 
-- New personas: open a PR with 1 JSON file in `.dayzero/personas/` that passes `persona.schema.json`, plus its rule tests.
-- New stacks: open a PR with 1 guide in `.dayzero/stacks/` that follows the 12 sections of `_generic.md`.
-- Protocol changes: open an issue first and describe the run that went wrong.
+- **New persona:** a PR with 1 JSON file that passes the schema, plus its rule tests.
+- **New stack:** a PR with 1 guide in `.dayzero/stacks/` that follows the 12 sections of `_generic.md`.
+- **Protocol change:** open an issue first and describe the run that went wrong.
+
+<p align="center">
+  <a href="VISION.md">Vision</a> · <a href=".dayzero/system_protocol.md">Protocol</a> · <a href="CHANGELOG.md">Changelog</a>
+</p>
