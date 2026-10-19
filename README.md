@@ -128,47 +128,117 @@ The personas run in Critic Mode. Praise, hedging, and compliment sandwiches are 
 
 ## The crowd
 
-DayZero comes with 28 ready personas. You don't have to write any. Each one runs on structured rules with tests, so the same code gets the same drops on every run.
+DayZero comes with 28 ready personas. You don't have to write any.
 
-**Community Edition: 3 personas, free, in this repo**
+Every persona below runs on structured rules with tests, so the same code gets the same drops on every run. Free ones ship in this repo. **Pro** ones come with the Pro Pack.
 
-| Persona | Who | Leaves when |
+| Persona | Edition | Leaves when |
 |---|---|---|
-| `indie_hacker` | Solo founder, $400 MRR, 1am product hunter | Signup asks for more than email and password, or a free trial needs a card |
-| `tired_pm` | Senior PM at a 400-person B2B company, burned out | First value takes more than 3 clicks, or the first screen is empty |
-| `skeptical_boomer` | Owns a 12-person HVAC business, reads every word | No human to contact, an app install to try it, or data asked before explaining why |
+| `indie_hacker` | Free | Signup asks for more than email and password, or a free trial needs a card |
+| `tired_pm` | Free | First value takes more than 3 clicks, or the first screen is empty |
+| `skeptical_boomer` | Free | No human to contact, an app install to try it, or data asked before explaining why |
+| `api_first_junior_analyst` | **Pro** | No public API, or API limits too low to sync daily |
+| `night_shift_indie_builder` | **Pro** | No free tier with API access, no public docs |
+| `paranoid_devsecops_admin` | **Pro** | No SAML or OIDC SSO, no compliance page |
+| `crypto_degen_trader` | **Pro** | Any request for a seed phrase or private key |
+| `five_second_ceo` | **Pro** | Empty first screen or a setup wizard |
+| `roi_driven_pm` | **Pro** | No price, no measurable result before a contract |
+| `density_first_banker` | **Pro** | No keyboard shortcuts, fewer than 20 values on screen |
+| `change_averse_accountant` | **Pro** | No export, no print view |
+| `privacy_first_hr_director` | **Pro** | No role-based access or audit log |
+| `cost_cutting_clinic_director` | **Pro** | No visible price, no data compliance statement |
+| `speed_obsessed_sales_rep` | **Pro** | More than 3 fields to log a call, core screens with no loading state |
+| `anxious_health_seeker` | **Pro** | No human to contact, no stated response time |
+| `elderly_patient_low_vision` | **Pro** | Text under 16px, low contrast, code-only login |
+| `overloaded_shift_nurse` | **Pro** | Routine entry takes more steps than paper, input lost on timeout |
+| `broke_genz_student` | **Pro** | No free tier, card before value |
+| `budget_tracking_parent` | **Pro** | Total price hidden until the last step, no renewal reminder |
+| `fraud_wary_pensioner` | **Pro** | No phone support, bank or ID details without a reason |
+| `impulse_shopper` | **Pro** | No 1-tap wallet, account before payment |
+| `luxury_concierge_buyer` | **Pro** | No named human contact, visible errors |
+| `speed_courier` | **Pro** | More than 2 taps for a routine action, blocking splash |
+| `on_the_move_rideshare_driver` | **Pro** | Small text or tap targets, no offline state |
+| `voice_first_site_foreman` | **Pro** | No voice input, low contrast |
+| `mobile_only_fitness_coach` | **Pro** | Any core action impossible on a phone |
+| `keyboard_native_cashier` | **Pro** | No keyboard shortcuts for core actions |
+| `lead_hungry_plumber` | **Pro** | Pricing with no link to leads or jobs |
 
-**Pro Pack: 25 more personas**
+Rules read shared measurements. 26 are free in [`measurements.json`](.dayzero/measurements.json); 39 **Pro** ones come in `measurements.pro.json` and load only when the Pro Pack is installed.
 
-| Group | Persona | Leaves when |
-|---|---|---|
-| Builders | `api_first_junior_analyst` | No public API, or API limits too low to sync daily |
-| Builders | `night_shift_indie_builder` | No free tier with API access, no public docs |
-| Builders | `paranoid_devsecops_admin` | No SAML or OIDC SSO, no compliance page |
-| Builders | `crypto_degen_trader` | Any request for a seed phrase or private key |
-| Business | `five_second_ceo` | Empty first screen or a setup wizard |
-| Business | `roi_driven_pm` | No price, no measurable result before a contract |
-| Business | `density_first_banker` | No keyboard shortcuts, fewer than 20 values on screen |
-| Business | `change_averse_accountant` | No export, no print view |
-| Business | `privacy_first_hr_director` | No role-based access or audit log |
-| Business | `cost_cutting_clinic_director` | No visible price, no data compliance statement |
-| Business | `speed_obsessed_sales_rep` | More than 3 fields to log a call, core screens with no loading state |
-| Health | `anxious_health_seeker` | No human to contact, no stated response time |
-| Health | `elderly_patient_low_vision` | Text under 16px, low contrast, code-only login |
-| Health | `overloaded_shift_nurse` | Routine entry takes more steps than paper, input lost on timeout |
-| Money | `broke_genz_student` | No free tier, card before value |
-| Money | `budget_tracking_parent` | Total price hidden until the last step, no renewal reminder |
-| Money | `fraud_wary_pensioner` | No phone support, bank or ID details without a reason |
-| Money | `impulse_shopper` | No 1-tap wallet, account before payment |
-| Money | `luxury_concierge_buyer` | No named human contact, visible errors |
-| On the move | `speed_courier` | More than 2 taps for a routine action, blocking splash |
-| On the move | `on_the_move_rideshare_driver` | Small text or tap targets, no offline state |
-| On the move | `voice_first_site_foreman` | No voice input, low contrast |
-| On the move | `mobile_only_fitness_coach` | Any core action impossible on a phone |
-| On the move | `keyboard_native_cashier` | No keyboard shortcuts for core actions |
-| On the move | `lead_hungry_plumber` | Pricing with no link to leads or jobs |
+<details>
+<summary>All 65 measurements</summary>
 
-The Pro Pack also adds 39 measurements for these personas (`measurements.pro.json`). Unzip it into `.dayzero/`. Same schema, same protocol. Pricing is on request: open an issue with the **Pro license request** template.
+| Measurement | Edition | Level | What it checks |
+|---|---|---|---|
+| `clicks_to_value` | Free | step | Clicks, taps, and submits from the first screen up to this step |
+| `steps_to_value` | Free | product | Number of distinct screens or pages from the first screen to first value, both included |
+| `form_fields` | Free | step | Required input fields the user must fill to leave this step |
+| `wait_required` | Free | step | The user must wait for something outside the product to continue |
+| `empty_state_without_sample` | Free | step | The first screen after signup shows no data and offers no sample data, template, or demo content |
+| `oauth_present` | Free | product | At least 1 third-party sign-in (Google, GitHub, Apple, SSO) is wired in |
+| `email_domain_restricted` | Free | product | Signup rejects some email domains |
+| `password_constraints` | Free | product | Number of password rules beyond a minimum of 8 characters |
+| `email_verification_required` | Free | product | The user cannot reach first value before verifying their email |
+| `free_tier_present` | Free | product | A plan or mode exists that reaches first value without paying and without a card |
+| `card_before_value` | Free | product | Card or payment details are required before first value on the default path |
+| `install_required_to_try` | Free | product | First value needs installing something first |
+| `lowest_paid_usd_month` | Free | product | Lowest monthly price for 1 user on any paid plan, converted to USD per month |
+| `price_visible` | Free | product | A price amount is shown to visitors before signup |
+| `contact_human_visible` | Free | product | Public pages show at least 1 of: phone number, physical address, named support email |
+| `permission_requests_before_value` | Free | product | Device or data permission prompts shown before or at first value |
+| `permission_explained` | Free | product | Every permission prompt before first value is preceded by a plain-language reason on the same screen |
+| `export_present` | Free | product | The user can export their own data |
+| `api_present` | Free | product | A documented or token-authenticated public API exists for users |
+| `data_exit_present` | Free | product | The user can get their own data out by at least 1 route: file export, a token-authenticated public API, or a CLI command that reads it |
+| `unexplained_jargon_terms` | Free | step | Distinct terms on this screen from the jargon list that are not explained on the same screen |
+| `adds_notifications` | Free | feature | The feature sends email, push, or in-app notifications, or adds a badge or inbox |
+| `team_push_before_value` | Free | product | The flow asks the user to invite teammates or create a team before first value |
+| `ai_label_without_outcome` | Free | feature | The feature is labelled AI and the label states no concrete result |
+| `min_body_font_px` | Free | product | Smallest font size used for body or action text on public and onboarding screens |
+| `low_contrast_text` | Free | product | Body or action text on public or onboarding screens uses a color under WCAG AA 4.5:1 contrast against its background |
+| `phone_support_visible` | **Pro** | product | Public pages show a phone number for support or sales |
+| `support_response_time_stated` | **Pro** | product | A support response time is shown in the product or on public pages |
+| `compliance_statement_visible` | **Pro** | product | A public page states where data is stored and for how long, a DPA, or a certification |
+| `enterprise_sso_present` | **Pro** | product | SAML or OIDC enterprise single sign-on is wired in code |
+| `otp_only_login` | **Pro** | product | Sign-in needs a one-time code and offers no other method |
+| `access_audit_present` | **Pro** | product | Role-based permissions limit who can see or edit records, and access or changes are logged per user |
+| `secret_key_requested` | **Pro** | product | A form asks for a seed phrase, private key, recovery words, or a full password for another service |
+| `sends_user_data_to_ai` | **Pro** | feature | The feature sends the user's personal or business data to an external AI or third-party API |
+| `keyboard_shortcuts_present` | **Pro** | product | Core actions on the primary path can be triggered from the keyboard |
+| `confirm_dialog_on_routine_action` | **Pro** | feature | A routine action (save, log, send) opens a confirmation dialog |
+| `changes_existing_layout` | **Pro** | feature | The feature moves or redesigns existing controls, or overlays a tour or coach marks on an existing screen |
+| `tour_or_wizard_before_value` | **Pro** | step | This step shows a product tour, coach marks, illustration slides, or a setup wizard before the user's own data or first value |
+| `urgency_or_promo_cues_present` | **Pro** | product | Screens on the flow show a countdown, 'act now', limited stock, sale or discount badge, or coupon |
+| `raw_or_missing_error_states` | **Pro** | product | A core screen has no loading, error, or offline state, or an error shows a raw code or stack text with no plain explanation |
+| `input_lost_on_timeout` | **Pro** | product | Typed form input is lost when the session expires or the user navigates away |
+| `outcome_metric_shown` | **Pro** | product | Public pages or the first-value screen show a concrete number result: time or money saved, leads or jobs delivered, a metric moved |
+| `public_docs_linked` | **Pro** | product | Public docs or an API reference are reachable from the landing page |
+| `mobile_layout_missing` | **Pro** | product | A core screen has no phone-width layout, or a setup step says it needs a desktop or laptop |
+| `min_tap_target_px` | **Pro** | product | Smallest height or width of a primary action control on core screens |
+| `voice_input_present` | **Pro** | product | The user can enter core data by voice |
+| `wallet_payment_present` | **Pro** | product | Checkout offers a 1-tap wallet |
+| `account_before_payment` | **Pro** | product | The default checkout path requires creating an account before paying |
+| `total_price_before_final_step` | **Pro** | product | The full total including fees, tax, and shipping is shown before the final checkout step |
+| `promo_code_field_present` | **Pro** | product | Checkout has a promo or discount code input |
+| `renewal_reminder_present` | **Pro** | product | An auto-renewing plan sends or shows a reminder before it renews |
+| `print_view_present` | **Pro** | product | Reports or tables offer a print action or a print stylesheet |
+| `checkout_branding_customizable` | **Pro** | product | The seller can show their own logo and colours on the checkout their customers see |
+| `realtime_data_present` | **Pro** | feature | The feature subscribes to live data (websocket or stream) |
+| `api_daily_request_limit` | **Pro** | product | Documented or enforced public API requests allowed per user per day on the lowest plan that has API access |
+| `api_on_free_tier` | **Pro** | product | The free plan can call the public API |
+| `taps_per_routine_action` | **Pro** | product | Taps or clicks to complete the most frequent repeated action once the user is on its screen |
+| `blocking_splash_present` | **Pro** | product | A splash screen, intro animation, or video blocks input on every app open for 1 second or more |
+| `advanced_order_types_present` | **Pro** | product | Order entry offers limit, stop, or OCO orders beyond a market buy or sell |
+| `values_per_data_screen` | **Pro** | step | Data values shown on the main screen without scrolling |
+| `invite_present` | **Pro** | product | The user can invite another person into their account or workspace |
+| `action_copy_sentences` | **Pro** | step | Sentences the user must read on this step to understand its main action |
+| `ai_training_opt_out_documented` | **Pro** | product | Where user data is sent to an external AI, a documented opt-out from retention and model training exists |
+| `sensitive_data_before_value` | **Pro** | product | Bank, card, or government ID details are asked before first value with no plain-language reason on the same screen |
+| `checkout_screens` | **Pro** | product | Distinct screens from cart or plan choice to payment confirmation, both included |
+
+</details>
+
+Pro Pack: unzip into `.dayzero/`. Same schema, same protocol. Pricing is on request: open an issue with the **Pro license request** template.
 
 **Your own personas.** Optional. Drop a JSON file next to the others and it joins the crowd. See [Add your own persona](#add-your-own-persona).
 
