@@ -152,8 +152,6 @@ Pricing is on request. Open an issue with the **Pro license request** template.
 | `@.dayzero validate --funnel-only` | Funnel only, no Kano |
 | `@.dayzero validate --test-rules` | Check every persona rule against its test snippets |
 
-Flags combine: `@.dayzero validate --app apps/web --flow invite`.
-
 ## Supported stacks
 
 | Stack | Detected by |
@@ -165,7 +163,7 @@ Flags combine: `@.dayzero validate --app apps/web --flow invite`.
 
 We tested each one on its own fixture app. In those runs DayZero picked the right stack every time, cited a real file for every flow step, and inferred at most 10% of its measurements.
 
-Any other stack runs on a generic guide, and the report says `Stack: unknown` up front. In a monorepo, DayZero picks the app with the most screens and lists the others with a ready `--app` command. If a flow simply isn't in the code, the report says so instead of inventing steps.
+Any other stack runs on a generic guide, and the report says `Stack: unknown` up front. In a monorepo, DayZero picks the app with the most screen, navigation, and form files and lists the others with a ready `--app` command. If a flow is missing or only half-built (for example a checkout that never marks the user as paid), the report says so instead of inventing the missing steps.
 
 ## Write your own persona
 

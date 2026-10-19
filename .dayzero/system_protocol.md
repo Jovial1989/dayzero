@@ -95,7 +95,7 @@ Role meanings: `landing` = the first screen or command a new user meets, whateve
 - If a step offers more than 1 way forward (for example "Turn on reminders" or "Not now"), walk the **primary action**: the main or first button, or the default answer of a prompt. Never pick a path because it is shorter. Note the other path under `friction`.
 - If a step can never be passed (dead end in code), keep it, mark it `dead end`, and cite the evidence.
 
-**Trace check.** The flow is traceable only if its start role and end role are both found **and** at least 2 steps are `measured` with a cited file. If not:
+**Trace check.** The flow is traceable only if its start role and end role are both found **and** at least 2 steps are `measured` with a cited file. A role is found only when code produces the state the role names, not when a screen could merely host it: `paid_active` needs code that sets a paid flag or plan after payment (a success URL alone does not count); `invitee_value` needs code that shows the invitee the inviter's shared content (the invitee's own new, empty workspace does not count); `resume_value` needs code that brings back the user's own data. A `dead end` step can never stand in for a missing end role. If not:
 
 - If the code has no trace of the flow at all (for example no invite code for `invite`), write `n/a: flow not found in code`.
 - Otherwise write `n/a: flow not traceable in code`.
@@ -199,6 +199,7 @@ Walk the persona through the flow from Step 1b, step by step.
 - At each step, evaluate the persona's `step` and `global` rules.
 - If a `drop` is applied, the persona drops here. Record the step, the rule id, measured vs threshold, the evidence, and a 1-sentence quote starting from the rule's `reaction`. A persona that drops does not see later steps.
 - If no `drop` applies, the persona continues.
+- **Gates already passed.** In `upgrade`, `invite`, and `return`, the walker has already tried the product once. A `global` drop on a product-level measurement, or a legacy deal breaker, is `fired_flag_only` there, except at a step whose role is `upgrade_offer`, `pricing`, or `checkout` (a paid decision reopens it) or `invitee_join` or `signup` (a new person's first try). Step-scoped rules apply as usual.
 - A `dead end` step drops every persona still in, with rule id `dead_end` and the dead-end evidence.
 - When a persona reaches the last step, record `reached first value` and a 1-sentence verdict.
 - Legacy mode: apply v1.0 behaviour (inference rule, secondary rules, deal breakers, patience budget). Record the rule id as `legacy` and the measured value as `unmeasured`.

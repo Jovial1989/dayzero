@@ -16,7 +16,8 @@
 - Any-stack support: `.dayzero/stacks/` with guides for `nextjs-react`, `flutter`, `ios-swiftui`, `cli-api`, plus `_generic.md` (stack detection, app discovery, fallback for other stacks, labelled `unknown`).
 - `validate --flow <name>`: walk `first_value` (default), `upgrade`, `invite`, or `return`. 8 new step roles for these flows.
 - `validate --app <path>`: pick 1 app in a repo with several. Without it, the app with the most user-facing files is auto-picked and the others are listed.
-- Flows that cannot be traced in code end in an honest `n/a` report instead of invented steps.
+- Flows that cannot be traced in code end in an honest `n/a` report instead of invented steps. A role counts as found only when code produces its state: `paid_active` needs code that sets a paid flag or plan, `invitee_value` needs the invitee to see the inviter's shared content, `resume_value` needs the user's own data back. A dead-end step never stands in for a missing end role.
+- Outside `first_value`, product-wide deal breakers only flag a persona who already tried the product once. They can still drop it at `upgrade_offer`, `pricing`, `checkout`, `invitee_join`, and `signup`.
 - Report header: Stack, App, Flow, Other apps.
 - Kano interview mode: `kano_answers.json` holds 1 shared set of 5 standard answer lines ("I like it that way." to "I dislike it that way."). Every persona picks from it, word for word.
 - 2-pass interview: pass 1 collects answers only; pass 2 writes a custom answer (≤25 words, persona voice) only when a row is `contradictory` (Q), `against_crowd` (opposite to the feature's majority), or `against_bias` (opposite to the persona's own `kano_bias`).
