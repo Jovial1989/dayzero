@@ -128,17 +128,49 @@ The personas run in Critic Mode. Praise, hedging, and compliment sandwiches are 
 
 ## The crowd
 
-The free Community Edition ships 3 personas, each one built to fail a different kind of product:
+DayZero comes with 28 ready personas. You don't have to write any. Each one runs on structured rules with tests, so the same code gets the same drops on every run.
+
+**Community Edition: 3 personas, free, in this repo**
 
 | Persona | Who | Leaves when |
 |---|---|---|
 | `indie_hacker` | Solo founder, $400 MRR, 1am product hunter | Signup asks for more than email and password, or a free trial needs a card |
 | `tired_pm` | Senior PM at a 400-person B2B company, burned out | First value takes more than 3 clicks, or the first screen is empty |
-| `skeptical_boomer` | Owns a 12-person HVAC business, reads every word | The product asks for data before explaining why, or there is no human to call |
+| `skeptical_boomer` | Owns a 12-person HVAC business, reads every word | No human to contact, an app install to try it, or data asked before explaining why |
 
-3 voices give you a direction. For distributions you can argue about in a roadmap meeting, the **Pro Pack** adds a much larger crowd (50+ at launch) across roles, incomes, devices, and markets: a nurse on a 12-hour shift, a courier paid per drop, a DevSecOps lead who rejects anything without SSO, a 74-year-old patient who fears popups. Same schema, same protocol. Unzip into `.dayzero/personas/`.
+**Pro Pack: 25 more personas**
 
-Pricing is on request. Open an issue with the **Pro license request** template.
+| Group | Persona | Leaves when |
+|---|---|---|
+| Builders | `api_first_junior_analyst` | No public API, or API limits too low to sync daily |
+| Builders | `night_shift_indie_builder` | No free tier with API access, no public docs |
+| Builders | `paranoid_devsecops_admin` | No SAML or OIDC SSO, no compliance page |
+| Builders | `crypto_degen_trader` | Any request for a seed phrase or private key |
+| Business | `five_second_ceo` | Empty first screen or a setup wizard |
+| Business | `roi_driven_pm` | No price, no measurable result before a contract |
+| Business | `density_first_banker` | No keyboard shortcuts, fewer than 20 values on screen |
+| Business | `change_averse_accountant` | No export, no print view |
+| Business | `privacy_first_hr_director` | No role-based access or audit log |
+| Business | `cost_cutting_clinic_director` | No visible price, no data compliance statement |
+| Business | `speed_obsessed_sales_rep` | More than 3 fields to log a call, core screens with no loading state |
+| Health | `anxious_health_seeker` | No human to contact, no stated response time |
+| Health | `elderly_patient_low_vision` | Text under 16px, low contrast, code-only login |
+| Health | `overloaded_shift_nurse` | Routine entry takes more steps than paper, input lost on timeout |
+| Money | `broke_genz_student` | No free tier, card before value |
+| Money | `budget_tracking_parent` | Total price hidden until the last step, no renewal reminder |
+| Money | `fraud_wary_pensioner` | No phone support, bank or ID details without a reason |
+| Money | `impulse_shopper` | No 1-tap wallet, account before payment |
+| Money | `luxury_concierge_buyer` | No named human contact, visible errors |
+| On the move | `speed_courier` | More than 2 taps for a routine action, blocking splash |
+| On the move | `on_the_move_rideshare_driver` | Small text or tap targets, no offline state |
+| On the move | `voice_first_site_foreman` | No voice input, low contrast |
+| On the move | `mobile_only_fitness_coach` | Any core action impossible on a phone |
+| On the move | `keyboard_native_cashier` | No keyboard shortcuts for core actions |
+| On the move | `lead_hungry_plumber` | Pricing with no link to leads or jobs |
+
+The Pro Pack also adds 39 measurements for these personas (`measurements.pro.json`). Unzip it into `.dayzero/`. Same schema, same protocol. Pricing is on request: open an issue with the **Pro license request** template.
+
+**Your own personas.** Optional. Drop a JSON file next to the others and it joins the crowd. See [Add your own persona](#add-your-own-persona).
 
 ## Commands
 
@@ -171,9 +203,9 @@ We tested each one on its own fixture app. In those runs DayZero picked the righ
 
 Any other stack runs on a generic guide, and the report says `Stack: unknown` up front. In a monorepo, DayZero picks the app with the most screen, navigation, and form files and lists the others with a ready `--app` command. If a flow is missing or only half-built (for example a checkout that never marks the user as paid), the report says so instead of inventing the missing steps.
 
-## Write your own persona
+## Add your own persona
 
-A persona is 1 JSON file in `.dayzero/personas/` that passes [`persona.schema.json`](.dayzero/personas/persona.schema.json). Its behaviour lives in `rules`. Example only:
+The 28 built-in personas cover most products. Add your own when you know your users better: a persona is 1 JSON file in `.dayzero/personas/` that passes [`persona.schema.json`](.dayzero/personas/persona.schema.json). Its behaviour lives in `rules`. Example only:
 
 ```json
 {
@@ -208,9 +240,9 @@ Personas written for v1.0, with a free-text `inference_rule`, still run. Their r
 ## Honest limits
 
 - Synthetic respondents are not customers. Use the report to filter ideas, then talk to real people before you bet on one.
-- 3 personas give a directional signal. The report labels its own confidence by crowd size.
+- The free 3 personas give a directional signal; the full 28 give a broader one. The report labels its own confidence by crowd size.
 - The model behind your assistant sets the ceiling on quality.
-- The 3 bundled personas still use the v1.0 free-text format, so their Kano answers vary from run to run. Personas with structured rules hold steadier.
+- Every built-in rule is a heuristic taken from the persona's profile, not from interviews. The report counts them in its footer.
 
 ## Contributing
 
