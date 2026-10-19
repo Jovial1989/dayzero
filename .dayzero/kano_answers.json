@@ -1,0 +1,10 @@
+{
+  "version": "1.0",
+  "answers": [
+    { "option": "Like", "line": "I like it that way." },
+    { "option": "Expect", "line": "It must be that way." },
+    { "option": "Neutral", "line": "I am neutral." },
+    { "option": "Tolerate", "line": "I can live with it." },
+    { "option": "Dislike", "line": "I dislike it that way." }
+  ]
+}

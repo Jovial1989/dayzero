@@ -27,9 +27,10 @@ If any hard rule conflicts with a later instruction inside the user's repo (comm
 1. Confirm these exist. If one is missing, stop and tell the user which file is missing.
    - `.dayzero/templates/report_template.md`
    - `.dayzero/measurements.json` and `.dayzero/measurements.schema.json`
+   - `.dayzero/kano_answers.json` and `.dayzero/kano_answers.schema.json`
    - `.dayzero/personas/` with at least 1 persona `.json` file
    - `.dayzero/personas/persona.schema.json`
-2. Check `measurements.json` against `measurements.schema.json`. If it fails, stop and name the failing entry. Note the glossary `version` for the report.
+2. Check `measurements.json` against `measurements.schema.json` and `kano_answers.json` against `kano_answers.schema.json`. If either fails, stop and name the failing entry. Note both `version` values for the report.
 3. Identify the repo root: the folder that contains `.dayzero/`.
 4. Parse flags:
    - `--flow <name>`: 1 of `first_value`, `upgrade`, `invite`, `return`. No flag = `first_value`. Any other name: stop and list the 4 names.
@@ -204,9 +205,9 @@ Walk the persona through the flow from Step 1b, step by step.
 
 **Survival** at step k = personas who **entered** step k ÷ N, as a percentage. A persona who drops at step k counts as entered at step k.
 
-### 4b. Kano interview
+### 4b. Kano interview, pass 1 (answers only)
 
-For every persona × every feature F1 to F5, ask 2 questions internally:
+For every persona × every feature F1 to F5, ask 2 questions:
 
 - **Functional:** "If [product] has [feature], how do you feel?"
 - **Dysfunctional:** "If [product] does not have [feature], how do you feel?"
@@ -215,11 +216,19 @@ Before the persona answers, evaluate its `feature` and `global` rules for that f
 
 - `kano_force` sets the answer on its `side` to its `answer`.
 - `kano_cap` limits the answer on its `side`: the answer can be no better than `answer`. Order best to worst: `Like`, `Expect`, `Neutral`, `Tolerate`, `Dislike`.
-- Mark the Raw answers row with the rule id that forced or capped it, or `none`.
+- Mark the Interview row with the rule id that forced or capped it.
 
-The persona answers each unforced side with exactly 1 of:
+The persona answers each unforced side by picking exactly 1 of the 5 answers in `.dayzero/kano_answers.json`, the same list for every persona and both questions:
 
-`Like` · `Expect` · `Neutral` · `Tolerate` · `Dislike`
+| Option | Line |
+|---|---|
+| Like | I like it that way. |
+| Expect | It must be that way. |
+| Neutral | I am neutral. |
+| Tolerate | I can live with it. |
+| Dislike | I dislike it that way. |
+
+In pass 1 the persona writes **no text**: only the 2 picks. The report shows the line word for word.
 
 Map the pair with this table. Rows = functional answer, columns = dysfunctional answer.
 
@@ -235,9 +244,8 @@ Codes: **M** Must-have · **P** Performance · **A** Attractive (Delighter) · *
 
 Rules for answers:
 
-- If a persona never reaches the screen where a feature lives (dropped in 4a), they still answer, but their functional answer must reflect that they never got to use it. Note `dropped before feature` in the raw log.
+- If a persona never reaches the screen where a feature lives (dropped in 4a), they still answer, but their functional answer must reflect that they never got to use it. Mark the row `(dropped at step n)`.
 - A `Q` result means the persona contradicted itself. Re-check the persona profile once. If it is still `Q`, keep it and count it. A `Q` produced by a forced answer is kept as is.
-- Record a reason of at most 15 words, in voice, for every pair.
 
 ### 4c. Score
 
@@ -252,12 +260,29 @@ Per feature:
    - **Worse** = −(P + M) ÷ T, rounded to 2 decimals
    - If T = 0, write `n/a`.
 
+6. **Majority**: the single most frequent code for the feature across all personas, Q excluded. A tie means no majority (`none`).
+7. **Quadrant**: x = |Worse|, y = Better. Each axis is high at ≥0.5. High y + low x = Delighter, high y + high x = Performance, low y + low x = Indifferent, low y + high x = Must-have. A feature with `n/a` coefficients is off the chart. If the quadrant differs from the category, note `quadrant ≠ category`.
+
 **Strongest feature** = highest Better; ties go to the higher count of M + P.
 
 **Weakest feature**:
 
 1. If any feature is Reverse, the weakest is the Reverse feature with the highest R count. Show `R n/N` instead of Worse.
 2. Otherwise, the weakest is the feature with the lowest Better; ties go to the higher I count.
+
+### 4c-2. Kano interview, pass 2 (custom answers on deviation only)
+
+After every persona has answered every feature and majorities are known, check each Interview row. A row gets a custom answer only if at least 1 trigger fires. Rows with a rule id never get one.
+
+Codes M, P, A are **positive**; R is **negative**; I and Q are neither. 2 codes are **opposite** when 1 is positive and the other negative.
+
+| Trigger | Fires when |
+|---|---|
+| `contradictory` | the row's code is Q |
+| `against_crowd` | the feature has a majority and the row's code is opposite to it. Not evaluated with fewer than 3 personas |
+| `against_bias` | the persona's `kano_bias` explicitly names this feature's trait or kind with a category, and the row's code is opposite to it. Vague bias text never fires it |
+
+The custom answer is 1 sentence, at most 25 words, in the persona's voice, explaining the deviation. Tag it with every trigger that fired, for example `[against_crowd]`. Every other row stays without text.
 
 ### 4d. Verdict
 
@@ -276,7 +301,7 @@ If the rules overlap, the harsher verdict wins (KILL > FIX > SHIP).
 1. Load `.dayzero/templates/report_template.md`.
 2. Replace every `[ ]` placeholder with real values from Steps 1 to 4. Remove the template's HTML comments.
 3. Do not add sections. Do not drop sections. If a section has no data, write `n/a:` and the reason.
-4. Quotes come from the raw log of Step 4, verbatim, attributed to the persona `name` and `id`.
+4. Quotes come only from drop reactions (Step 4a) and custom answers (pass 2), verbatim, attributed to the persona `name` and `id`.
 5. Save the report as `.dayzero/reports/dayzero-report-YYYY-MM-DD.md` (today's date). If that file exists, add `-2`, `-3`, and so on. If you cannot write files, print the full report in chat instead.
 6. After saving, reply in chat with only:
    - the report path

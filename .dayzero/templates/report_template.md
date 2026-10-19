@@ -18,6 +18,7 @@ Flow not traceable or not found: Section 1 verdict = that n/a; Sections 2 and 3 
 | Assistant / model | [e.g. Cursor + claude-sonnet-5-5] |
 | Protocol | DayZero System Protocol v1.1 |
 | Glossary | [version from measurements.json] |
+| Answer list | [version from kano_answers.json] |
 | Personas (N) | [N] ([comma-separated persona ids]; mark legacy ones `(legacy)`) |
 | Confidence | [directional / indicative / broad] |
 | Areas scanned | [e.g. app/routes, components, api; sampled: yes/no] |
@@ -101,32 +102,75 @@ Flow not traceable or not found: Section 1 verdict = that n/a; Sections 2 and 3 
 
 ### Classification
 
-| Feature | M | P | A | I | R | Q | Category | Better | Worse |
-|---|---|---|---|---|---|---|---|---|---|
-| F1 [name] | [n] | [n] | [n] | [n] | [n] | [n] | [category] | [0.00] | [-0.00] |
-| F2 [name] | [n] | [n] | [n] | [n] | [n] | [n] | [category] | [0.00] | [-0.00] |
-| F3 [name] | [n] | [n] | [n] | [n] | [n] | [n] | [category] | [0.00] | [-0.00] |
-| F4 [name] | [n] | [n] | [n] | [n] | [n] | [n] | [category] | [0.00] | [-0.00] |
-| F5 [name] | [n] | [n] | [n] | [n] | [n] | [n] | [category] | [0.00] | [-0.00] |
+| Feature | M | P | A | I | R | Q | Category | Majority | Better | Worse |
+|---|---|---|---|---|---|---|---|---|---|---|
+| F1 [name] | [n] | [n] | [n] | [n] | [n] | [n] | [category] | [code or none] | [0.00] | [-0.00] |
+| F2 [name] | [n] | [n] | [n] | [n] | [n] | [n] | [category] | [ ] | [0.00] | [-0.00] |
+| F3 [name] | [n] | [n] | [n] | [n] | [n] | [n] | [category] | [ ] | [0.00] | [-0.00] |
+| F4 [name] | [n] | [n] | [n] | [n] | [n] | [n] | [category] | [ ] | [0.00] | [-0.00] |
+| F5 [name] | [n] | [n] | [n] | [n] | [n] | [n] | [category] | [ ] | [0.00] | [-0.00] |
 
-<!-- Better = (A+P)/(A+P+M+I). Worse = -(P+M)/(A+P+M+I). Tie-break M > P > A > I > R; mark "split". -->
+<!-- Better = (A+P)/(A+P+M+I). Worse = -(P+M)/(A+P+M+I). Tie-break M > P > A > I > R; mark "split". Majority = most frequent code, Q excluded; tie = none. -->
+
+### Quadrant
+
+<!-- 1 point per feature with numeric coefficients: "F#: [x, y]" with x = |Worse| and y = Better, 2 decimals, 0 to 1. The square brackets in point lines are Mermaid syntax and stay in the report. Point names F1 to F5 only. Do not edit the axis, quadrant, or title lines. -->
+
+```mermaid
+quadrantChart
+    title Kano quadrant
+    x-axis Low dissatisfaction if missing --> High dissatisfaction if missing
+    y-axis Low satisfaction if present --> High satisfaction if present
+    quadrant-1 Performance
+    quadrant-2 Delighter
+    quadrant-3 Indifferent
+    quadrant-4 Must-have
+    F1: [x, y]
+    F2: [x, y]
+```
+
+| | Low dissatisfaction if missing (<0.5) | High dissatisfaction if missing (≥0.5) |
+|---|---|---|
+| **High satisfaction if present (≥0.5)** | Delighter (Attractive): [F# or none] | Performance (Satisfier): [F# or none] |
+| **Low satisfaction if present (<0.5)** | Indifferent: [F# or none] | Must-have (Basic): [F# or none] |
+
+Off chart: [F# Reverse, R n/N · F# Questionable, Q n/N, or "none"]
+Quadrant ≠ category: [F# (quadrant X, category Y), or "none"]
 
 ### By category
 
-- **Must-have:** [features, or "none"]. [1 statement on what breaks if missing]
-- **Performance:** [features, or "none"]. [1 statement on where more is better]
-- **Delighters:** [features, or "none"]. [1 statement on why it surprises]
+- **Must-have (Basic):** [features, or "none"]. [1 statement on what breaks if missing]
+- **Performance (Satisfier):** [features, or "none"]. [1 statement on where more is better]
+- **Delighter (Attractive):** [features, or "none"]. [1 statement on why it surprises]
 - **Indifferent:** [features, or "none"]. [1 statement: cut or freeze]
 - **Reverse:** [features, or "none"]. [1 statement on who it repels and why]
 - **Questionable / split:** [features, or "none"]
 
-### Raw answers
+### Interview
 
-| Persona | Feature | Functional | Dysfunctional | Code | Rule | Reason (≤15 words) |
-|---|---|---|---|---|---|---|
-| [id] | F1 | [Like/Expect/Neutral/Tolerate/Dislike] | [ ] | [M/P/A/I/R/Q] | `[rule id or none]` | [reason] |
-| [id] | F2 | [ ] | [ ] | [ ] | `[ ]` | [ ] |
-| [ ] | [ ] | [ ] | [ ] | [ ] | `[ ]` | [ ] |
+<!-- 1 block per feature F1 to F5. Functional and Dysfunctional cells contain exactly 1 line from kano_answers.json, word for word. Note is empty, or "rule <id>", or trigger tags + 1 quoted custom answer (≤25 words). Never both a rule id and a custom answer. Personas who dropped before the feature: "(dropped at step n)" after the id. -->
+
+#### F1 [name]
+
+**Functional:** If [product] has [feature], how do you feel?
+**Dysfunctional:** If [product] does not have [feature], how do you feel?
+
+| Persona | Functional | Dysfunctional | Code | Note |
+|---|---|---|---|---|
+| [id] | [answer line] | [answer line] | [M/P/A/I/R/Q] | [empty / rule id / `[trigger]` "custom answer"] |
+| [id] | [ ] | [ ] | [ ] | [ ] |
+
+#### F2 [name]
+
+[same block]
+
+### Deviations
+
+| Persona | Feature | Code | Majority | Triggers | Custom answer |
+|---|---|---|---|---|---|
+| [id] | [F#] | [code] | [code or none] | [contradictory / against_crowd / against_bias] | "[custom answer]" |
+
+<!-- 1 row per custom answer in the Interview, or a single row "none". -->
 
 ### Rules fired
 
@@ -150,4 +194,4 @@ Flow not traceable or not found: Section 1 verdict = that n/a; Sections 2 and 3 
 
 ---
 
-<sub>Generated locally by DayZero. Code was read by your assistant only. [N] synthetic personas, confidence: [label]. [k] of [m] fired rules have a heuristic source. Run real interviews before betting on these numbers.</sub>
+<sub>Generated locally by DayZero. Code was read by your assistant only. [N] synthetic personas, confidence: [label]. [k] of [m] fired rules have a heuristic source. [c] custom answers out of [r] interview rows. Run real interviews before betting on these numbers.</sub>

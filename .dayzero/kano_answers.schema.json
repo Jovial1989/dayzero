@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "dayzero/kano_answers.schema.json",
+  "title": "DayZero Kano answer list",
+  "type": "object",
+  "required": ["version", "answers"],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+$" },
+    "answers": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "required": ["option", "line"],
+        "additionalProperties": false,
+        "properties": {
+          "option": { "enum": ["Like", "Expect", "Neutral", "Tolerate", "Dislike"] },
+          "line": { "type": "string", "minLength": 3, "maxLength": 60 }
+        }
+      },
+      "allOf": [
+        { "contains": { "properties": { "option": { "const": "Like" } } } },
+        { "contains": { "properties": { "option": { "const": "Expect" } } } },
+        { "contains": { "properties": { "option": { "const": "Neutral" } } } },
+        { "contains": { "properties": { "option": { "const": "Tolerate" } } } },
+        { "contains": { "properties": { "option": { "const": "Dislike" } } } }
+      ]
+    }
+  }
+}
